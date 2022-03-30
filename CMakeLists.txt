@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.21)
+project(space_invaders)
+set(SOURCES window.cpp window.h game.cpp game.h)
+set(CMAKE_CXX_STANDARD 17)
+find_package(SFML 2.5.1 COMPONENTS graphics audio network REQUIRED)
+include_directories(${SFML_INCLUDE_DIRS})
+add_executable(space_invaders ${SOURCES} main.cpp)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE sfml-audio  sfml-network sfml-graphics)
