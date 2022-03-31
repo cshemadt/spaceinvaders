@@ -9,8 +9,8 @@ enum Direction {
 };
 class Ship {
 private:
-    sf::Vector2u m_position;
-    sf::Vector2u m_windowSize;
+    sf::Vector2f m_position;
+    sf::Vector2f m_windowSize;
     Direction m_direction;
     sf::Sprite m_sprite;
     sf::Texture m_shipTexture;
@@ -20,9 +20,9 @@ private:
     bool m_isAlive;
 public:
     Ship(sf::Vector2u windowSize);
-    ~Ship();
-    void setPosition(sf::Vector2u &position);
-    void setPosition(unsigned int x,unsigned int y);
+    ~Ship()=default;
+    void setPosition(sf::Vector2f &position);
+    void setPosition(float x,float y);
     void setDirection(Direction);
 
     void spriteInit();
@@ -34,7 +34,7 @@ public:
     void reset();
     void render(sf::RenderWindow &renderWindow);
 
-    sf::Vector2u getPosition();
+    sf::Vector2f getPosition();
     Direction getDirection();
     sf::Sprite *getSprite();
     int getCurentHp() const;
