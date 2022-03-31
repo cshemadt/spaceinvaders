@@ -29,7 +29,6 @@ public:
         std::string getWindowTitle() const;
         sf::RenderWindow* getRenderWindow();
         void toggleFullscreen();
-
 };
 
 
