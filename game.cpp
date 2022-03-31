@@ -3,7 +3,14 @@
 Game::Game() : m_window{"Space Invaders",sf::Vector2u {900,650}}, m_ship{getWindow()->getWindowSize()} {}
 Game::~Game() = default;
 
-void Game::handleInput() {}
+void Game::handleInput() {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+        m_ship.move(Direction::Left);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+        m_ship.move(Direction::Right);
+    }
+}
 void Game::render() {
     m_window.beginDraw();
     m_ship.render(*m_window.getRenderWindow());

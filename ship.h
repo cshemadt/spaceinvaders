@@ -29,7 +29,7 @@ public:
     void increaseScore();
     void decreaseHp();
     void lose();
-    void move();
+    void move(const Direction &direction);
     void fire();
     void reset();
     void render(sf::RenderWindow &renderWindow);

@@ -5,7 +5,7 @@
 int main() {
     Game game{};
     while(!game.getWindow()->isClosed()) {
-        //game.handleInput();
+        game.handleInput();
         game.update();
         game.render();
     }
