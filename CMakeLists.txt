@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 project(space_invaders)
-set(SOURCES window.cpp window.h game.cpp game.h ship.cpp ship.h)
+set(SOURCES Window.cpp Window.h Game.cpp Game.h Ship.cpp Ship.h Enemy.cpp Enemy.h)
 set(CMAKE_CXX_STANDARD 17)
 find_package(SFML 2.5.1 COMPONENTS graphics audio network REQUIRED)
 include_directories(${SFML_INCLUDE_DIRS})

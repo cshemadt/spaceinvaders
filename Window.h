@@ -2,7 +2,8 @@
 #ifndef SPACE_INVADERS_WINDOW_H
 #define SPACE_INVADERS_WINDOW_H
 
-class Window {
+class Window 
+{
 private:
         sf::RenderWindow m_renderWindow;
         sf::Vector2u m_windowSize;

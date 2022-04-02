@@ -2,14 +2,19 @@
 #define SPACE_INVADERS_GAME_H
 
 #include <SFML/Graphics.hpp>
-#include "window.h"
-#include "ship.h"
+#include "Enemy.h"
+#include "Window.h"
+#include "Ship.h"
+#include <vector>
 
-class Game {
+class Game 
+{
 private:
     Window m_window;
     Ship m_ship;
-    sf::Clock clock;
+    std::vector<std::vector<Enemy>> m_enemies;
+    sf::Clock m_clock;
+    void initEnemies();
     sf::Time m_elapsed;
 public:
     Game();
@@ -19,7 +24,7 @@ public:
     void update();
     Window *getWindow();
     Ship *getShip();
-    sf::Time getElapsed() const;
+    sf::Time getElapsed();
     void restartClock();
 
 };

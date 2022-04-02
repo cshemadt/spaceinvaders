@@ -2,12 +2,14 @@
 #define SPACE_INVADERS_SHIP_H
 
 #include <SFML/Graphics.hpp>
-enum Direction {
+enum Direction 
+{
     None,
     Left,
     Right
 };
-class Ship {
+class Ship 
+{
 private:
     sf::Vector2f m_position;
     sf::Vector2f m_windowSize;

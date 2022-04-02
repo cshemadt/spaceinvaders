@@ -1,0 +1,58 @@
+#include "Enemy.h"
+#include <SFML/Graphics.hpp>
+#include <iostream>
+
+Enemy::Enemy(sf::Vector2u windowSize) : m_windowSize{windowSize}
+{
+    m_size=sf::Vector2u{50,43};
+    m_enemySprite.setPosition(m_windowSize.x/4,100);
+    //spriteInit();
+}
+
+void Enemy::setPosition(unsigned int x, unsigned int y) 
+{
+    m_enemySprite.setPosition(sf::Vector2f(x, y));
+}
+void Enemy::setPosition(sf::Vector2f &position) 
+{
+    m_enemySprite.setPosition(sf::Vector2f(position));
+}
+void Enemy::setDirection(Direction direction) 
+{
+    m_direction = direction;
+}
+void Enemy::spriteInit(int index)
+{
+    if(!m_enemyTexture.loadFromFile("../assets/aliensSpriteSheet.png"))
+    {
+        std::cout<<"Textures not found. \n";
+        return;
+    }
+    m_enemySprite.setTexture(m_enemyTexture);
+    m_enemySprite.setTextureRect(sf::IntRect(index*m_size.x+index*8,0, m_size.x, m_size.y));
+}
+void Enemy::die() {}
+
+void Enemy::move(const Direction &direction) 
+{
+}
+
+void Enemy::fire() 
+{
+
+}
+
+void Enemy::reset() 
+{
+
+}
+
+void Enemy::render(sf::RenderWindow &renderWindow) 
+{
+    renderWindow.draw(m_enemySprite);
+}
+
+sf::Vector2f Enemy::getPosition() { return m_enemySprite.getPosition(); }
+Direction Enemy::getDirection() { return m_direction; }
+sf::Sprite *Enemy::getSprite() { return &m_enemySprite; }
+sf::Vector2u Enemy::getSize() { return m_size; }
