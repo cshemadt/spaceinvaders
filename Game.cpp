@@ -1,8 +1,10 @@
 #include <SFML/Graphics.hpp>
 #include "Game.h"
 #include <iostream>
-Game::Game() : m_window{"Space Invaders",sf::Vector2u {900,650}}, m_ship{getWindow()->getWindowSize()}
+Game::Game() : m_window{"Space Invaders",sf::Vector2u {800,600}}, m_ship{getWindow()->getWindowSize()}
 {
+    m_enemiesRows=3;
+    m_enemiesColumns=12;
     initEnemies();
     
 }
@@ -22,9 +24,9 @@ void Game::handleInput()
 void Game::render() 
 {
     m_window.beginDraw();
-    for (size_t i = 0; i < 3; ++i)
+    for (size_t i = 0; i < m_enemiesRows; ++i)
     {
-        for (size_t j = 0; j < 7; ++j)
+        for (size_t j = 0; j < m_enemiesColumns; ++j)
         {
             m_enemies.at(i).at(j).render(*m_window.getRenderWindow());
         }
@@ -44,23 +46,23 @@ void Game::update()
 }
 void Game::initEnemies()
 {
-    for (size_t i = 0; i < 3; ++i)
+    for (size_t i = 0; i < m_enemiesRows; ++i)
     {
         std::vector<Enemy> enemies_subvector;
-        for (size_t j = 0; j < 7; ++j)
+        for (size_t j = 0; j < m_enemiesColumns; ++j)
         {
             enemies_subvector.push_back(Enemy(getWindow()->getWindowSize()));
         }
         m_enemies.push_back(enemies_subvector);
     }
-    for (size_t i = 0; i < 3; ++i)
+    for (size_t i = 0; i < m_enemiesRows; ++i)
     {
-        for (size_t j = 0; j < 7; ++j)
+        for (size_t j = 0; j < m_enemiesColumns; ++j)
         {
             int width = m_enemies.at(i).at(j).getSize().x;
             int height = m_enemies.at(i).at(j).getSize().y;
             m_enemies.at(i).at(j).spriteInit(i);
-            m_enemies.at(i).at(j).setPosition(m_enemies.at(i).at(j).getPosition().x+j*width+j*10, m_enemies.at(i).at(j).getPosition().y+i*height+i*10);
+            m_enemies.at(i).at(j).setPosition(m_enemies.at(i).at(j).getPosition().x+j*width+j*30, m_enemies.at(i).at(j).getPosition().y+i*height+i*30);
         }
     }
 }

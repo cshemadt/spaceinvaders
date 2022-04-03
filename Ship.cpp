@@ -23,10 +23,12 @@ void Ship::reset()
 }
 void Ship::spriteInit() 
 {
-    m_shipTexture.loadFromFile("../assets/shipSprite.png");
+    m_shipTexture.loadFromFile("../assets/Player.png");
     m_sprite.setTexture(m_shipTexture);
-    m_sprite.setTextureRect(sf::IntRect(sf::Vector2i(0.f, 0.f), sf::Vector2i(50,50)));
-    m_sprite.setOrigin((m_shipTexture.getSize().x/2.0f), m_shipTexture.getSize().y/2.0f);
+    m_sprite.setScale(3.f,3.f);
+    m_sprite.setTextureRect(sf::IntRect(sf::Vector2i(0.f, 0.f), sf::Vector2i(16,16)));  
+    m_sprite.setOrigin(m_sprite.getTextureRect().width/2,m_sprite.getTextureRect().height/2);
+    
 }
 
 //---------------------------- MAIN METHODS ----------------------------
@@ -40,7 +42,7 @@ void Ship::move(const Direction &direction)
     switch(direction) 
     {
         case Direction::Left:
-            if (m_position.x >= m_sprite.getOrigin().x) 
+            if (m_position.x>= m_sprite.getOrigin().x*3) 
             {
                 setPosition(m_position.x-0.04f, m_position.y);  
             }
@@ -51,7 +53,7 @@ void Ship::move(const Direction &direction)
             break;
 
         case Direction::Right:
-            if (m_position.x <= m_windowSize.x - m_sprite.getOrigin().x) 
+            if (m_position.x + m_sprite.getOrigin().x*3 <= m_windowSize.x) 
             {
                 setPosition(m_position.x+0.04f, m_position.y);
             }
