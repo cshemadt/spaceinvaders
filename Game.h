@@ -13,11 +13,13 @@ private:
     Window m_window;
     Ship m_ship;
     std::vector<std::vector<Enemy>> m_enemies;
+    std::vector<sf::RectangleShape> m_bullets;
     int m_enemiesRows;
     int m_enemiesColumns;
     sf::Clock m_clock;
-    void initEnemies();
     sf::Time m_elapsed;
+    void initEnemies();
+    void tick();
 public:
     Game();
     ~Game();

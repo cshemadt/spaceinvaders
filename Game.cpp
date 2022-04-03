@@ -14,11 +14,15 @@ void Game::handleInput()
 {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
     {
-        m_ship.move(Direction::Left);
+        m_ship.move(Direction::Left, m_elapsed);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) 
     {
-        m_ship.move(Direction::Right);
+        m_ship.move(Direction::Right, m_elapsed);
+    }
+    if(m_bullets.size() == 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+    {
+        m_ship.fire(m_bullets);
     }
 }
 void Game::render() 
@@ -31,6 +35,11 @@ void Game::render()
             m_enemies.at(i).at(j).render(*m_window.getRenderWindow());
         }
     }
+    for (size_t i = 0; i < m_bullets.size(); ++i)
+    {
+        m_window.draw(m_bullets.at(i));
+    }
+    
     m_ship.render(*m_window.getRenderWindow());  
     
     m_window.endDraw();
@@ -38,11 +47,8 @@ void Game::render()
 void Game::update() 
 {
     getWindow()->update();
-    float timestep = 1.0f/60;
-    if(m_elapsed.asSeconds() >= timestep) 
-    {
-        m_elapsed-=sf::seconds(timestep);
-    }
+    tick();
+    
 }
 void Game::initEnemies()
 {
@@ -66,7 +72,35 @@ void Game::initEnemies()
         }
     }
 }
+void Game::tick()
+{
+    for (size_t i = 0; i < m_bullets.size(); ++i)
+    {
+        m_bullets.at(i).setPosition(m_bullets.at(i).getPosition().x, m_bullets.at(i).getPosition().y-400*m_elapsed.asSeconds());
+    }
+    for (size_t i = 0; i < m_bullets.size(); ++i)
+    {
+        if(m_bullets.at(i).getPosition().y < 0)
+        {
+            m_bullets.clear();
+        }
+    }
+    if(m_bullets.size() != 0)
+    {
+        for (size_t i = 0; i < m_enemies.size(); ++i)
+        {
+            for (size_t j = 0; j < m_enemiesColumns; j++)
+            {
+            }
+            
+        }
+    }
+    
+    
+    
+    
+}
 sf::Time Game::getElapsed() { return m_elapsed; }
-void Game::restartClock() { m_elapsed+=m_clock.restart(); }
+void Game::restartClock() { m_elapsed=m_clock.restart(); }
 Window* Game::getWindow() { return &m_window; }
 Ship* Game::getShip() { return &m_ship; }

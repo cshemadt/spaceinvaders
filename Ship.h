@@ -17,6 +17,7 @@ private:
     sf::Sprite m_sprite;
     sf::Texture m_shipTexture;
     int m_hp;
+    int m_speed;
     int m_score;
     int m_scoreIncrement;
     bool m_isAlive;
@@ -31,8 +32,8 @@ public:
     void increaseScore();
     void decreaseHp();
     void lose();
-    void move(const Direction &direction);
-    void fire();
+    void move(const Direction &direction, sf::Time elapsed);
+    void fire(std::vector<sf::RectangleShape> &bullets);
     void reset();
     void render(sf::RenderWindow &renderWindow);
 
