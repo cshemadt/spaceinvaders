@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "Ship.h"
+#include "Bullet.h"
 #include <iostream>
 
 //---------------------------- CONSTRUCTORS ----------------------------
@@ -68,10 +69,9 @@ void Ship::move(const Direction &direction, sf::Time elapsed)
 
     }
 }
-void Ship::fire(std::vector<sf::RectangleShape> &bullets)
+void Ship::fire(std::vector<Bullet> &bullets)
 {
-    sf::RectangleShape bullet = sf::RectangleShape(sf::Vector2f(5,5));
-    bullet.setFillColor(sf::Color::Yellow);
+    Bullet bullet;
     bullet.setPosition(sf::Vector2f(m_position.x+m_sprite.getGlobalBounds().width/2, m_position.y-(m_sprite.getOrigin().y*3)));
     bullets.push_back(bullet);
     std::cout<<bullets.size()<<std::endl;

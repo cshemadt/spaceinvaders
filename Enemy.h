@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "Ship.h"
+
 class Enemy 
 {
 protected:
@@ -10,6 +11,7 @@ protected:
     sf::Vector2u m_windowSize;
     Direction m_direction;
     sf::Sprite m_enemySprite;
+    sf::FloatRect m_enemyCollisionRect;
     sf::Texture m_enemyTexture;
     bool m_isAlive;
 public:
@@ -24,14 +26,16 @@ public:
     void move(const Direction &direction);
     void fire();
     void reset();
+    void updateCollisionRect();
     void render(sf::RenderWindow &renderWindow);
 
     sf::Vector2f getPosition();
     Direction getDirection();
     sf::Sprite *getSprite();
     sf::Vector2u getSize();
+    sf::FloatRect getEnemyCollisionRect();
+    bool isAlive() const;
 
 };
-
 
 #endif

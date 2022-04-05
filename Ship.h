@@ -2,6 +2,7 @@
 #define SPACE_INVADERS_SHIP_H
 
 #include <SFML/Graphics.hpp>
+#include "Bullet.h"
 enum Direction 
 {
     None,
@@ -33,7 +34,7 @@ public:
     void decreaseHp();
     void lose();
     void move(const Direction &direction, sf::Time elapsed);
-    void fire(std::vector<sf::RectangleShape> &bullets);
+    void fire(std::vector<Bullet> &bullets);
     void reset();
     void render(sf::RenderWindow &renderWindow);
 

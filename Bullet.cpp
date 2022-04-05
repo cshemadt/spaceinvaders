@@ -7,12 +7,30 @@
 Bullet::Bullet()
 {
     m_bulletRect=sf::RectangleShape(sf::Vector2f(5,5));
+    m_bulletRect.setFillColor(sf::Color::Yellow);
     m_isAlive=true;
     m_speed=400;
 }
 void Bullet::move(sf::Time elapsed)
 {
     setPosition(sf::Vector2f(getPosition().x, getPosition().y-m_speed*elapsed.asSeconds()));
+}
+void Bullet::render(sf::RenderWindow &renderWindow) { renderWindow.draw(m_bulletRect); }
+bool Bullet::checkCollisionWith(const sf::FloatRect &rect)
+{
+    sf::FloatRect bulletRect=m_bulletRect.getGlobalBounds();
+    // if(bulletRect.left < rect.left+rect.width && bulletRect.left+bulletRect.width > rect.left &&
+    //     bulletRect.top<rect.top+rect.height && bulletRect.top+bulletRect.height > rect.top)
+    // {
+    //     m_isAlive = false;
+    //     return true;
+    // }
+    if(bulletRect.intersects(rect))
+    {
+        m_isAlive = false;
+        return true;
+    }
+    return false;
 }
 void Bullet::setPosition(sf::Vector2f position)
 {
@@ -25,4 +43,8 @@ sf::Vector2f Bullet::getPosition() const
 sf::Vector2f Bullet::getSize() const
 {
     return m_bulletRect.getSize();
+}
+bool Bullet::isAlive() const
+{
+    return m_isAlive;
 }

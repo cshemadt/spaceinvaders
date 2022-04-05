@@ -6,16 +6,20 @@ Enemy::Enemy(sf::Vector2u windowSize) : m_windowSize{windowSize}
 {
     m_size=sf::Vector2u{16,16};
     m_enemySprite.setPosition(m_windowSize.x/5-30,100);
-
-}
+    updateCollisionRect();
+}    
 
 void Enemy::setPosition(unsigned int x, unsigned int y) 
 {
     m_enemySprite.setPosition(sf::Vector2f(x, y));
+    updateCollisionRect();
+
 }
 void Enemy::setPosition(sf::Vector2f &position) 
 {
     m_enemySprite.setPosition(sf::Vector2f(position));
+    updateCollisionRect();
+
 }
 void Enemy::setDirection(Direction direction) 
 {
@@ -35,7 +39,11 @@ void Enemy::spriteInit(int index)
     m_enemySprite.setTextureRect(sf::IntRect(0,0,16,16));
     m_enemySprite.setOrigin(m_enemySprite.getTextureRect().width/2.f, m_enemySprite.getTextureRect().height/2.f);
 }
-void Enemy::die() {}
+void Enemy::updateCollisionRect()
+{
+    m_enemyCollisionRect = sf::FloatRect(m_enemySprite.getGlobalBounds().left, m_enemySprite.getGlobalBounds().top, m_enemySprite.getGlobalBounds().width-10,m_enemySprite.getGlobalBounds().height-10);
+}
+void Enemy::die() { m_isAlive = false; }
 
 void Enemy::move(const Direction &direction) 
 {
@@ -60,3 +68,9 @@ sf::Vector2f Enemy::getPosition() { return m_enemySprite.getPosition(); }
 Direction Enemy::getDirection() { return m_direction; }
 sf::Sprite *Enemy::getSprite() { return &m_enemySprite; }
 sf::Vector2u Enemy::getSize() { return m_size; }
+bool Enemy::isAlive() const { return m_isAlive; }
+
+sf::FloatRect Enemy::getEnemyCollisionRect() 
+{ 
+    return m_enemyCollisionRect; 
+}
