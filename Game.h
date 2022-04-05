@@ -20,7 +20,10 @@ private:
     int m_enemiesColumns;
     int m_gapBetweenEnemies;
     sf::Clock m_clock;
+    sf::Clock m_enemyClock;
     sf::Time m_elapsed;
+    sf::Time m_enemyElapsed;
+    float m_frameTime;
     void initEnemies();
     void tick();
 public:
@@ -32,7 +35,9 @@ public:
     Window *getWindow();
     Ship *getShip();
     sf::Time getElapsed();
+    sf::Time getEnemyElapsed();
     void restartClock();
+    void restartEnemyClock();
 
 };
 

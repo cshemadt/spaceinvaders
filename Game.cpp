@@ -7,6 +7,7 @@ Game::Game() : m_window{"Space Invaders",sf::Vector2u {800,600}}, m_ship{getWind
     m_enemiesRows=3;
     m_enemiesColumns=12;
     m_gapBetweenEnemies = 30;
+    m_frameTime=1;
     initEnemies();
     
 }
@@ -30,6 +31,7 @@ void Game::handleInput()
 void Game::render() 
 {
     m_window.beginDraw();
+    //---------------------------- DRAWING ENEMIES ----------------------------
     for (size_t i = 0; i < m_enemiesRows; ++i)
     {
         for (size_t j = 0; j < m_enemiesColumns; ++j)
@@ -40,6 +42,7 @@ void Game::render()
             }
         }
     }
+    //---------------------------- DRAWING BULLET ----------------------------
     for (size_t i = 0; i < m_bullets.size(); ++i)
     {
         if (m_bullets.at(i).isAlive())
@@ -83,6 +86,7 @@ void Game::initEnemies()
 }
 void Game::tick()
 {
+    //---------------------------- UPDATE BULLETS STATE ----------------------------
     for (size_t i = 0; i < m_bullets.size(); ++i)
     {
         m_bullets.at(i).move(m_elapsed);
@@ -93,7 +97,8 @@ void Game::tick()
         {
             m_bullets.clear();
         }
-    }
+    }   
+    //---------------------------- BULLETS COLLISIONS ----------------------------
     if(!m_bullets.empty())
     {
         for (size_t i = 0; i < m_enemiesRows; ++i)
@@ -107,8 +112,27 @@ void Game::tick()
             }
         }    
     }
+    //---------------------------- UPDATE ENEMIES STATE ----------------------------
+    if(m_enemyElapsed.asSeconds()>=m_frameTime)
+    {
+        for (size_t i = 0; i < m_enemiesRows; ++i)
+        {
+            for (size_t j = 0; j < m_enemiesColumns; ++j)
+            {
+                m_enemies.at(i).at(j).move(Direction::Right);
+            }
+        }
+        m_enemyElapsed-=sf::seconds(m_frameTime);
+    }
+        
+
 }
 sf::Time Game::getElapsed() { return m_elapsed; }
 void Game::restartClock() { m_elapsed=m_clock.restart(); }
+
+sf::Time Game::getEnemyElapsed() { return m_enemyElapsed; }
+void Game::restartEnemyClock() { m_enemyElapsed+=m_enemyClock.restart(); }
+
+
 Window* Game::getWindow() { return &m_window; }
 Ship* Game::getShip() { return &m_ship; }

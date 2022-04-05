@@ -13,17 +13,19 @@ protected:
     sf::Sprite m_enemySprite;
     sf::FloatRect m_enemyCollisionRect;
     sf::Texture m_enemyTexture;
+    int m_speed;
     bool m_isAlive;
 public:
     Enemy(sf::Vector2u windowSize);
     ~Enemy()=default;
-    void setPosition(sf::Vector2f &position);
+    void setPosition(const sf::Vector2f &position);
     void setPosition(unsigned int x,unsigned int y);
     void setDirection(Direction);
+    void setSpeed(int speed);
 
     virtual void spriteInit(int index);
     void die();
-    void move(const Direction &direction);
+    void move(Direction direction);
     void fire();
     void reset();
     void updateCollisionRect();
@@ -35,6 +37,7 @@ public:
     sf::Vector2u getSize();
     sf::FloatRect getEnemyCollisionRect();
     bool isAlive() const;
+    int getSpeed() const;
 
 };
 
