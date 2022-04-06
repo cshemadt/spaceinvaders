@@ -4,13 +4,11 @@
 
 Enemy::Enemy(sf::Vector2u windowSize) : m_windowSize{windowSize}
 {
-    m_size=sf::Vector2u{16,16};
-    m_enemySprite.setPosition(m_windowSize.x/5-30,100);
-    m_isAlive=true;
-    m_speed=30;
+    reset();    
     updateCollisionRect();
 }    
 
+//---------------------------- SETTERS ----------------------------
 void Enemy::setPosition(unsigned int x, unsigned int y) 
 {
     m_enemySprite.setPosition(sf::Vector2f(x, y));
@@ -23,9 +21,17 @@ void Enemy::setPosition(const sf::Vector2f &position)
     updateCollisionRect();
 
 }
-void Enemy::setDirection(Direction direction) 
+void Enemy::setSpeed(int speed) { m_speed = speed; }
+void Enemy::setDirection(Direction direction) { m_direction = direction; }
+
+
+//---------------------------- GAME LOGIC ----------------------------
+void Enemy::reset() 
 {
-    m_direction = direction;
+    m_size=sf::Vector2u{16,16};
+    m_enemySprite.setPosition(m_windowSize.x/5-30,100);
+    m_isAlive=true;
+    m_speed=20;
 }
 void Enemy::spriteInit(int index)
 {
@@ -42,15 +48,15 @@ void Enemy::spriteInit(int index)
 }
 void Enemy::updateCollisionRect()
 {
-    m_enemyCollisionRect = sf::FloatRect(m_enemySprite.getGlobalBounds().left, m_enemySprite.getGlobalBounds().top, m_enemySprite.getGlobalBounds().width-10,m_enemySprite.getGlobalBounds().height-10);
+    m_enemyCollisionRect = sf::FloatRect(m_enemySprite.getGlobalBounds().left, m_enemySprite.getGlobalBounds().top, m_enemySprite.getGlobalBounds().width-8,m_enemySprite.getGlobalBounds().height-8);
 }
 void Enemy::die() { m_isAlive = false; }
 
-void Enemy::move(Direction direction) 
+void Enemy::move() 
 {
     if(m_isAlive)
     {
-        switch(direction)
+        switch(m_direction)
         {
             case Direction::Right:
                 setPosition(sf::Vector2f(m_enemySprite.getPosition().x+m_speed, m_enemySprite.getPosition().y));
@@ -59,26 +65,23 @@ void Enemy::move(Direction direction)
                 setPosition(sf::Vector2f(m_enemySprite.getPosition().x-m_speed, m_enemySprite.getPosition().y));
             break;
             case Direction::None:
+                setPosition(sf::Vector2f(m_enemySprite.getPosition().x, m_enemySprite.getPosition().y));
+            break;
+            case Direction::Down:
+                setPosition(sf::Vector2f(m_enemySprite.getPosition().x, m_enemySprite.getPosition().y+m_speed));
             break;
         }
     }
 }
-
 void Enemy::fire() 
 {
-
 }
-
-void Enemy::reset() 
-{
-}
-
 void Enemy::render(sf::RenderWindow &renderWindow) 
 {
     renderWindow.draw(m_enemySprite);
 }
-void Enemy::setSpeed(int speed) { m_speed = speed; }
 
+//---------------------------- GETTERS   ----------------------------
 sf::Vector2f Enemy::getPosition() { return m_enemySprite.getPosition(); }
 Direction Enemy::getDirection() { return m_direction; }
 sf::Sprite *Enemy::getSprite() { return &m_enemySprite; }

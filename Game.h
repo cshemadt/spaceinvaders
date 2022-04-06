@@ -24,6 +24,7 @@ private:
     sf::Time m_elapsed;
     sf::Time m_enemyElapsed;
     float m_frameTime;
+    bool m_isEdge;
     void initEnemies();
     void tick();
 public:
@@ -38,6 +39,9 @@ public:
     sf::Time getEnemyElapsed();
     void restartClock();
     void restartEnemyClock();
+    void moveEnemiesDown();
+    bool checkOutOfBounds();
+    void setDirectionToEnemies(Direction);
 
 };
 

@@ -7,7 +7,8 @@ enum Direction
 {
     None,
     Left,
-    Right
+    Right,
+    Down
 };
 class Ship 
 {

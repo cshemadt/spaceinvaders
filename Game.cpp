@@ -7,7 +7,8 @@ Game::Game() : m_window{"Space Invaders",sf::Vector2u {800,600}}, m_ship{getWind
     m_enemiesRows=3;
     m_enemiesColumns=12;
     m_gapBetweenEnemies = 30;
-    m_frameTime=1;
+    m_frameTime=0.5;
+    m_isEdge = false;
     initEnemies();
     
 }
@@ -23,7 +24,7 @@ void Game::handleInput()
     {
         m_ship.move(Direction::Right, m_elapsed);
     }
-    if(m_bullets.size() == 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+    if(m_bullets.size() == 0 && (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Mouse::isButtonPressed(sf::Mouse::Left)))
     {
         m_ship.fire(m_bullets);
     }
@@ -61,6 +62,45 @@ void Game::update()
     tick();
     
 }
+bool Game::checkOutOfBounds()
+{
+    for (size_t i = 0; i < m_enemiesRows; ++i)
+    {
+        for (size_t j = 0; j < m_enemiesColumns; ++j)
+        {
+            if(m_enemies.at(i).at(j).isAlive() && (m_enemies.at(i).at(j).getDirection()==Direction::Right) && m_enemies.at(i).at(j).getPosition().x+m_enemies.at(i).at(j).getSize().x >= m_window.getWindowSize().x)
+            {
+                return true;
+            }
+            else if(m_enemies.at(i).at(j).isAlive() && m_enemies.at(i).at(j).getDirection()==Direction::Left && m_enemies.at(i).at(j).getPosition().x-(m_enemies.at(i).at(j).getSize().x*2) <= 0)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+void Game::moveEnemiesDown()
+{
+    for (size_t i = 0; i < m_enemiesRows; ++i)
+    {
+        for (size_t j = 0; j < m_enemiesColumns; ++j)
+        {
+            m_enemies.at(i).at(j).setPosition(m_enemies.at(i).at(j).getPosition().x, m_enemies.at(i).at(j).getPosition().y+m_enemies.at(i).at(j).getSize().y);
+        }
+    }
+    
+}
+void Game::setDirectionToEnemies(Direction direction)
+{
+    for (size_t i = 0; i < m_enemiesRows; ++i)
+    {
+        for (size_t j = 0; j < m_enemiesColumns; ++j)
+        {
+            m_enemies.at(i).at(j).setDirection(direction);
+        }
+    }
+}
 void Game::initEnemies()
 {
     for (size_t i = 0; i < m_enemiesRows; ++i)
@@ -80,6 +120,7 @@ void Game::initEnemies()
             int width = m_enemies.at(i).at(j).getSize().x;
             int height = m_enemies.at(i).at(j).getSize().y;
             m_enemies.at(i).at(j).spriteInit(i);
+            m_enemies.at(i).at(j).setDirection(Direction::Right);
             m_enemies.at(i).at(j).setPosition(m_enemies.at(i).at(j).getPosition().x+j*width+j*m_gapBetweenEnemies, m_enemies.at(i).at(j).getPosition().y+i*height+i*m_gapBetweenEnemies);
         }
     }
@@ -119,12 +160,48 @@ void Game::tick()
         {
             for (size_t j = 0; j < m_enemiesColumns; ++j)
             {
-                m_enemies.at(i).at(j).move(Direction::Right);
+                
+                if(m_enemies.at(i).at(j).isAlive() && (m_enemies.at(i).at(j).getDirection()==Direction::Right) && m_enemies.at(i).at(j).getPosition().x+(m_enemies.at(i).at(j).getSize().x*2)>= m_window.getWindowSize().x)
+                {
+                    m_isEdge=true;
+                }
+                else if(m_enemies.at(i).at(j).isAlive() && m_enemies.at(i).at(j).getDirection()==Direction::Left && m_enemies.at(i).at(j).getPosition().x-(m_enemies.at(i).at(j).getSize().x*2) <= 0)
+                {
+                    m_isEdge=true;
+                }
+                m_enemies.at(i).at(j).move();
+            }
+        }       
+        if(m_isEdge)
+        {
+            moveEnemiesDown();
+            m_isEdge=false;
+            if(m_enemies.at(0).at(0).getDirection()==Direction::Right)
+            {
+                setDirectionToEnemies(Direction::Left);
+                for (size_t i = 0; i < m_enemiesRows; ++i)
+                {
+                    for (size_t j = 0; j < m_enemiesColumns; ++j)
+                    {
+                        m_enemies.at(i).at(j).move();
+                    }
+                }  
+            }
+            else if(m_enemies.at(0).at(0).getDirection()==Direction::Left)
+            {
+                setDirectionToEnemies(Direction::Right);
+                for (size_t i = 0; i < m_enemiesRows; ++i)
+                {
+                    for (size_t j = 0; j < m_enemiesColumns; ++j)
+                    {
+                        m_enemies.at(i).at(j).move();
+                    }
+                }  
             }
         }
+        
         m_enemyElapsed-=sf::seconds(m_frameTime);
     }
-        
 
 }
 sf::Time Game::getElapsed() { return m_elapsed; }

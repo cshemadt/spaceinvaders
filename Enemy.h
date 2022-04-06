@@ -23,9 +23,9 @@ public:
     void setDirection(Direction);
     void setSpeed(int speed);
 
-    virtual void spriteInit(int index);
+    void spriteInit(int index);
     void die();
-    void move(Direction direction);
+    void move();
     void fire();
     void reset();
     void updateCollisionRect();
