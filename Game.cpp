@@ -7,7 +7,7 @@ Game::Game() : m_window{"Space Invaders",sf::Vector2u {800,600}}, m_ship{getWind
     m_enemiesRows=3;
     m_enemiesColumns=12;
     m_gapBetweenEnemies = 30;
-    m_frameTime=0.5;
+    m_frameTime=0.3;
     m_isEdge = false;
     initEnemies();
     
@@ -62,31 +62,13 @@ void Game::update()
     tick();
     
 }
-bool Game::checkOutOfBounds()
-{
-    for (size_t i = 0; i < m_enemiesRows; ++i)
-    {
-        for (size_t j = 0; j < m_enemiesColumns; ++j)
-        {
-            if(m_enemies.at(i).at(j).isAlive() && (m_enemies.at(i).at(j).getDirection()==Direction::Right) && m_enemies.at(i).at(j).getPosition().x+m_enemies.at(i).at(j).getSize().x >= m_window.getWindowSize().x)
-            {
-                return true;
-            }
-            else if(m_enemies.at(i).at(j).isAlive() && m_enemies.at(i).at(j).getDirection()==Direction::Left && m_enemies.at(i).at(j).getPosition().x-(m_enemies.at(i).at(j).getSize().x*2) <= 0)
-            {
-                return true;
-            }
-        }
-    }
-    return false;
-}
 void Game::moveEnemiesDown()
 {
     for (size_t i = 0; i < m_enemiesRows; ++i)
     {
         for (size_t j = 0; j < m_enemiesColumns; ++j)
         {
-            m_enemies.at(i).at(j).setPosition(m_enemies.at(i).at(j).getPosition().x, m_enemies.at(i).at(j).getPosition().y+m_enemies.at(i).at(j).getSize().y);
+            m_enemies.at(i).at(j).setPosition(m_enemies.at(i).at(j).getPosition().x, m_enemies.at(i).at(j).getPosition().y+(m_enemies.at(i).at(j).getSize().y*2));
         }
     }
     
@@ -153,6 +135,11 @@ void Game::tick()
             }
         }    
     }
+    //---------------------------- CHECK COLLISION BETWEEN ENEMIES AND SHIP ----------------------------
+    if(isLost())
+    {
+        lose();
+    }
     //---------------------------- UPDATE ENEMIES STATE ----------------------------
     if(m_enemyElapsed.asSeconds()>=m_frameTime)
     {
@@ -178,6 +165,11 @@ void Game::tick()
             m_isEdge=false;
             if(m_enemies.at(0).at(0).getDirection()==Direction::Right)
             {
+                if(m_frameTime>=0.1)
+                {
+                    m_frameTime-=0.05;
+                }
+                std::cout<<m_frameTime<<std::endl;
                 setDirectionToEnemies(Direction::Left);
                 for (size_t i = 0; i < m_enemiesRows; ++i)
                 {
@@ -189,6 +181,11 @@ void Game::tick()
             }
             else if(m_enemies.at(0).at(0).getDirection()==Direction::Left)
             {
+                if(m_frameTime>0.1)
+                {
+                    m_frameTime-=0.05;
+                }
+                std::cout<<m_frameTime<<std::endl;
                 setDirectionToEnemies(Direction::Right);
                 for (size_t i = 0; i < m_enemiesRows; ++i)
                 {
@@ -203,6 +200,28 @@ void Game::tick()
         m_enemyElapsed-=sf::seconds(m_frameTime);
     }
 
+}
+bool Game::isLost()
+{
+    for (size_t i = 0; i < m_enemiesRows; ++i)
+    {
+        for (size_t j = 0; j < m_enemiesColumns; ++j)
+        {
+            if(m_enemies.at(i).at(j).isAlive() && m_enemies.at(i).at(j).getEnemyCollisionRect().intersects(m_ship.getSprite()->getGlobalBounds()))
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+void Game::lose()
+{
+    m_enemies.clear();
+    initEnemies();
+    m_frameTime=0.3;
+    m_isEdge = false;
+    std::cout<<"LOSE!\n";
 }
 sf::Time Game::getElapsed() { return m_elapsed; }
 void Game::restartClock() { m_elapsed=m_clock.restart(); }

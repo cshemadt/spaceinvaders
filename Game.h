@@ -40,9 +40,9 @@ public:
     void restartClock();
     void restartEnemyClock();
     void moveEnemiesDown();
-    bool checkOutOfBounds();
     void setDirectionToEnemies(Direction);
-
+    bool isLost();
+    void lose();
 };
 
 #endif
