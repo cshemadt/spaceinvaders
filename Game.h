@@ -24,6 +24,8 @@ private:
     sf::Time m_elapsed;
     sf::Time m_enemyElapsed;
     float m_frameTime;
+    int m_enemyBulletsLimit;
+    int m_currentEnemyBullets;
     bool m_isEdge;
     void initEnemies();
     void tick();
@@ -33,6 +35,7 @@ public:
     void handleInput();
     void render();
     void update();
+    void reset();
     void updateBullets();
     void updateEnemies();
     Window *getWindow();

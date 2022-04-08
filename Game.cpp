@@ -4,12 +4,7 @@
 #include <iostream>
 Game::Game() : m_window{"Space Invaders",sf::Vector2u {800,600}}, m_ship{getWindow()->getWindowSize()}
 {
-    m_enemiesRows=3;
-    m_enemiesColumns=12;
-    m_gapBetweenEnemies = 30;
-    m_frameTime=0.3;
-    m_isEdge = false;
-    initEnemies();
+    reset();
     
 }
 Game::~Game() = default;
@@ -158,6 +153,7 @@ void Game::updateBullets()
 }
 void Game::updateEnemies()
 {
+    std::srand(std::time(0));
     if(m_enemyElapsed.asSeconds()>=m_frameTime)
     {
         for (size_t i = 0; i < m_enemiesRows; ++i)
@@ -172,6 +168,11 @@ void Game::updateEnemies()
                 else if(m_enemies.at(i).at(j).isAlive() && m_enemies.at(i).at(j).getDirection()==Direction::Left && m_enemies.at(i).at(j).getPosition().x-(m_enemies.at(i).at(j).getSize().x*2) <= 0)
                 {
                     m_isEdge=true;
+                }
+                if(rand()%2==1 && m_currentEnemyBullets<m_enemyBulletsLimit)
+                {
+                    m_enemies.at(i).at(j).fire(m_bullets);
+                    ++m_currentEnemyBullets;
                 }
                 m_enemies.at(i).at(j).move();
             }
@@ -231,12 +232,21 @@ bool Game::isLost()
     }
     return false;
 }
+void Game::reset()
+{
+    m_enemiesRows=3;
+    m_enemiesColumns=12;
+    m_gapBetweenEnemies = 30;
+    m_frameTime=0.3;
+    m_isEdge = false;
+    m_currentEnemyBullets = 0;
+    m_enemyBulletsLimit = 4;
+    initEnemies();
+}
 void Game::lose()
 {
     m_enemies.clear();
-    initEnemies();
-    m_frameTime=0.3;
-    m_isEdge = false;
+    reset();
     std::cout<<"LOSE!\n";
 }
 sf::Time Game::getElapsed() { return m_elapsed; }
