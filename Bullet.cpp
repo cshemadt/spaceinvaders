@@ -13,7 +13,20 @@ Bullet::Bullet()
 }
 void Bullet::move(sf::Time elapsed)
 {
-    setPosition(sf::Vector2f(getPosition().x, getPosition().y-m_speed*elapsed.asSeconds()));
+    switch(m_bulletType)
+    {
+        case BulletTypes::Ship:
+        {
+            setPosition(sf::Vector2f(getPosition().x, getPosition().y-m_speed*elapsed.asSeconds()));
+        }
+        break;
+        case BulletTypes::Enemy:
+        {
+            setPosition(sf::Vector2f(getPosition().x, getPosition().y+m_speed*elapsed.asSeconds()));
+        }
+        break;
+    }
+    
 }
 void Bullet::render(sf::RenderWindow &renderWindow) { renderWindow.draw(m_bulletRect); }
 bool Bullet::checkCollisionWith(const sf::FloatRect &rect)
@@ -47,4 +60,20 @@ sf::Vector2f Bullet::getSize() const
 bool Bullet::isAlive() const
 {
     return m_isAlive;
+}
+void Bullet::setBulletType(BulletTypes type)
+{
+    m_bulletType = type;
+}
+BulletTypes Bullet::getBulletType()
+{
+    return m_bulletType;
+}
+void Bullet::setSpeed(int speed)
+{
+    m_speed = speed;
+}
+int Bullet::getSpeed()
+{
+    return m_speed; 
 }

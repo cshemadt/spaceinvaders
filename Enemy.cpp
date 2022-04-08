@@ -73,8 +73,13 @@ void Enemy::move()
         }
     }
 }
-void Enemy::fire() 
+void Enemy::fire(std::vector<Bullet> &bullets) 
 {
+    Bullet bullet;
+    bullet.setBulletType(BulletTypes::Enemy);
+    bullet.setSpeed(200);
+    bullet.setPosition(sf::Vector2f(getPosition().x, getPosition().y+getSprite()->getGlobalBounds().height/2));
+    bullets.push_back(bullet);
 }
 void Enemy::render(sf::RenderWindow &renderWindow) 
 {

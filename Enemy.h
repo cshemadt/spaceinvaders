@@ -26,7 +26,7 @@ public:
     void spriteInit(int index);
     void die();
     void move();
-    void fire();
+    void fire(std::vector<Bullet> &bullets);
     void reset();
     void updateCollisionRect();
     void render(sf::RenderWindow &renderWindow);
@@ -38,7 +38,6 @@ public:
     sf::FloatRect getEnemyCollisionRect();
     bool isAlive() const;
     int getSpeed() const;
-
 };
 
 #endif

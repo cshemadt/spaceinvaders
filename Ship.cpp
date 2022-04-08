@@ -72,6 +72,7 @@ void Ship::move(const Direction &direction, sf::Time elapsed)
 void Ship::fire(std::vector<Bullet> &bullets)
 {
     Bullet bullet;
+    bullet.setBulletType(BulletTypes::Ship);
     bullet.setPosition(sf::Vector2f(m_position.x+m_sprite.getGlobalBounds().width/2, m_position.y-(m_sprite.getOrigin().y*3)));
     bullets.push_back(bullet);
 }

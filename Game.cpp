@@ -127,7 +127,7 @@ void Game::updateBullets()
     {
         if(m_bullets.at(i).getPosition().y < 0 || !m_bullets.at(i).isAlive())
         {
-            m_bullets.clear();
+            m_bullets.erase(m_bullets.begin()+i);
         }
     }   
     //---------------------------- BULLETS COLLISIONS ----------------------------
@@ -137,12 +137,23 @@ void Game::updateBullets()
         {
             for (size_t j = 0; j < m_enemiesColumns; ++j)
             {
-                if(m_enemies.at(i).at(j).isAlive() && m_bullets.at(0).checkCollisionWith(m_enemies.at(i).at(j).getEnemyCollisionRect()))
+                for (size_t k = 0; k < m_bullets.size(); ++k)
                 {
-                    m_enemies.at(i).at(j).die();
-                }
+                    if(m_enemies.at(i).at(j).isAlive() && m_bullets.at(k).getBulletType()==BulletTypes::Ship && m_bullets.at(k).checkCollisionWith(m_enemies.at(i).at(j).getEnemyCollisionRect()))
+                    {
+                        m_enemies.at(i).at(j).die();
+                    }
+                }               
             }
-        }    
+        }
+        for (size_t i = 0; i < m_bullets.size(); ++i)
+        {
+            if(m_bullets.at(i).isAlive() && m_bullets.at(i).getBulletType()==BulletTypes::Enemy && m_bullets.at(i).checkCollisionWith(m_ship.getSprite()->getGlobalBounds()))
+            {
+                lose();
+            }
+        }
+        
     }
 }
 void Game::updateEnemies()
