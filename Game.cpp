@@ -59,8 +59,7 @@ void Game::render()
 void Game::update() 
 {
     getWindow()->update();
-    tick();
-    
+    tick();   
 }
 void Game::moveEnemiesDown()
 {
@@ -110,6 +109,16 @@ void Game::initEnemies()
 void Game::tick()
 {
     //---------------------------- UPDATE BULLETS STATE ----------------------------
+    updateBullets();
+    //---------------------------- CHECK COLLISION BETWEEN ENEMIES AND SHIP ----------------------------
+    if(isLost())
+        lose();
+    //---------------------------- UPDATE ENEMIES STATE ----------------------------
+    updateEnemies();
+
+}
+void Game::updateBullets()
+{
     for (size_t i = 0; i < m_bullets.size(); ++i)
     {
         m_bullets.at(i).move(m_elapsed);
@@ -135,12 +144,9 @@ void Game::tick()
             }
         }    
     }
-    //---------------------------- CHECK COLLISION BETWEEN ENEMIES AND SHIP ----------------------------
-    if(isLost())
-    {
-        lose();
-    }
-    //---------------------------- UPDATE ENEMIES STATE ----------------------------
+}
+void Game::updateEnemies()
+{
     if(m_enemyElapsed.asSeconds()>=m_frameTime)
     {
         for (size_t i = 0; i < m_enemiesRows; ++i)
@@ -199,7 +205,6 @@ void Game::tick()
         
         m_enemyElapsed-=sf::seconds(m_frameTime);
     }
-
 }
 bool Game::isLost()
 {

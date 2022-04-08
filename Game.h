@@ -33,6 +33,8 @@ public:
     void handleInput();
     void render();
     void update();
+    void updateBullets();
+    void updateEnemies();
     Window *getWindow();
     Ship *getShip();
     sf::Time getElapsed();
