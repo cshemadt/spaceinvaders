@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "Enemy.h"
 #include <iostream>
+#include <algorithm>
 Game::Game() : m_window{"Space Invaders",sf::Vector2u {800,600}}, m_ship{getWindow()->getWindowSize()}
 {
     reset();
@@ -108,6 +109,13 @@ void Game::tick()
     //---------------------------- CHECK COLLISION BETWEEN ENEMIES AND SHIP ----------------------------
     if(isLost())
         lose();
+    if(isWin())
+    {
+        m_enemies.clear();
+        std::cout<<"WIN!!\n";
+        reset();
+    }
+
     //---------------------------- UPDATE ENEMIES STATE ----------------------------
     updateEnemies();
 
@@ -157,13 +165,18 @@ void Game::updateEnemies()
     std::srand(std::time(0));
     int rndRow=rand()%m_enemiesRows;
     int rndCol=rand()%m_enemiesColumns;
+    //COULD BE BUGS!!!!!!
+    while(!m_enemies.at(rndRow).at(rndCol).isAlive())
+    {
+        rndRow=rand()%m_enemiesRows;
+        rndCol=rand()%m_enemiesColumns;
+    }
     if(m_enemyElapsed.asSeconds()>=m_frameTime)
     {
         for (size_t i = 0; i < m_enemiesRows; ++i)
         {
             for (size_t j = 0; j < m_enemiesColumns; ++j)
             {
-                
                 if(m_enemies.at(i).at(j).isAlive() && (m_enemies.at(i).at(j).getDirection()==Direction::Right) && m_enemies.at(i).at(j).getPosition().x+(m_enemies.at(i).at(j).getSize().x*2)>= m_window.getWindowSize().x)
                 {
                     m_isEdge=true;
@@ -181,7 +194,6 @@ void Game::updateEnemies()
             m_isEdge=false;
             if(m_enemies.at(0).at(0).getDirection()==Direction::Right)
             {
-                m_currentEnemyBullets=0;
                 if(m_frameTime>=0.1)
                 {
                     m_frameTime-=0.05;
@@ -197,7 +209,6 @@ void Game::updateEnemies()
             }
             else if(m_enemies.at(0).at(0).getDirection()==Direction::Left)
             {
-                m_currentEnemyBullets=0;
                 if(m_frameTime>0.1)
                 {
                     m_frameTime-=0.05;
@@ -211,6 +222,8 @@ void Game::updateEnemies()
                     }
                 }  
             }
+
+            m_currentEnemyBullets=0;
         }
         m_enemyElapsed-=sf::seconds(m_frameTime);
     }
@@ -219,9 +232,11 @@ void Game::updateEnemies()
         if(m_enemies.at(rndRow).at(rndCol).isAlive() && m_currentEnemyBullets<m_enemyBulletsLimit)
         {
             m_enemies.at(rndRow).at(rndCol).fire(m_bullets);
-            ++m_currentEnemyBullets; 
-            m_enemyShootingIntervalElapsed-=sf::seconds(m_shootingInterval);
+            m_currentEnemyBullets++;
+            std::cout<<m_currentEnemyBullets<<" "<< m_enemyBulletsLimit<<std::endl;
+            std::cout<<"-----------\n";
         }
+        m_enemyShootingIntervalElapsed-=sf::seconds(m_shootingInterval);
         
     }
     
@@ -241,12 +256,28 @@ bool Game::isLost()
     }
     return false;
 }
+bool Game::isWin()
+{
+    bool flag=true;
+    for (size_t i = 0; i < m_enemiesRows; ++i)
+    {
+        for (size_t j = 0; j < m_enemiesColumns; ++j)
+        {
+            if(m_enemies.at(i).at(j).getPosition().y < m_window.getWindowSize().y)
+            {
+                flag=false;
+            }
+        }
+    }
+    return flag || isAllDead();
+}
 void Game::reset()
 {
+    m_isWin=false;
     m_enemiesRows=3;
     m_enemiesColumns=12;
     m_gapBetweenEnemies = 30;
-    m_frameTime=0.5;
+    m_frameTime=0.7;
     m_shootingInterval=1.0;
     m_isEdge = false;
     m_currentEnemyBullets = 0;
@@ -279,4 +310,33 @@ int Game::getShipBullets()
             ++count;
     }
     return count;
+}
+std::vector<Enemy> Game::getAliveEnemies()
+{
+    std::vector<Enemy> vector;
+    for (size_t i = 0; i < m_enemiesRows; i++)
+    {
+        for (size_t j = 0; j < m_enemiesColumns; j++)
+        {
+            if(m_enemies.at(i).at(j).isAlive())
+            {
+                vector.push_back(m_enemies.at(i).at(j));
+            }
+        }
+    }
+    return vector;
+}
+bool Game::isAllDead()
+{
+    for (size_t i = 0; i < m_enemiesRows; i++)
+    {
+        for (size_t j = 0; j < m_enemiesColumns; j++)
+        {
+            if(m_enemies.at(i).at(j).isAlive())
+            {
+                return false;
+            }
+        }
+    }
+    return true;
 }

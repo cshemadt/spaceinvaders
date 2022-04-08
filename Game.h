@@ -30,6 +30,7 @@ private:
     int m_enemyBulletsLimit;
     int m_currentEnemyBullets;
     bool m_isEdge;
+    bool m_isWin;
     void initEnemies();
     void tick();
 public:
@@ -52,8 +53,12 @@ public:
     void moveEnemiesDown();
     void setDirectionToEnemies(Direction);
     bool isLost();
+    bool isWin();
+    bool isAllDead();
     void lose();
     int getShipBullets();
+    std::vector<Enemy> getAliveEnemies();
+
 };
 
 #endif
