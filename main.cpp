@@ -11,6 +11,7 @@ int main()
         game.update();
         game.render();
         game.restartEnemyClock();
+        game.restartEnemyShootingIntervalClock();
         game.restartClock();
     }
 }

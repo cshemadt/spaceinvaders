@@ -19,7 +19,7 @@ void Game::handleInput()
     {
         m_ship.move(Direction::Right, m_elapsed);
     }
-    if(m_bullets.size() == 0 && (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Mouse::isButtonPressed(sf::Mouse::Left)))
+    if(getShipBullets()==0 && sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Mouse::isButtonPressed(sf::Mouse::Left))
     {
         m_ship.fire(m_bullets);
     }
@@ -120,7 +120,7 @@ void Game::updateBullets()
     }
     for (size_t i = 0; i < m_bullets.size(); ++i)
     {
-        if(m_bullets.at(i).getPosition().y < 0 || !m_bullets.at(i).isAlive())
+        if((m_bullets.at(i).getPosition().y < 0 && m_bullets.at(i).getBulletType()==BulletTypes::Ship) || (m_bullets.at(i).getPosition().y>m_window.getWindowSize().y && m_bullets.at(i).getBulletType()==BulletTypes::Enemy)|| !m_bullets.at(i).isAlive())
         {
             m_bullets.erase(m_bullets.begin()+i);
         }
@@ -137,6 +137,7 @@ void Game::updateBullets()
                     if(m_enemies.at(i).at(j).isAlive() && m_bullets.at(k).getBulletType()==BulletTypes::Ship && m_bullets.at(k).checkCollisionWith(m_enemies.at(i).at(j).getEnemyCollisionRect()))
                     {
                         m_enemies.at(i).at(j).die();
+                        m_bullets.erase(m_bullets.begin()+k);
                     }
                 }               
             }
@@ -154,6 +155,8 @@ void Game::updateBullets()
 void Game::updateEnemies()
 {
     std::srand(std::time(0));
+    int rndRow=rand()%m_enemiesRows;
+    int rndCol=rand()%m_enemiesColumns;
     if(m_enemyElapsed.asSeconds()>=m_frameTime)
     {
         for (size_t i = 0; i < m_enemiesRows; ++i)
@@ -169,11 +172,6 @@ void Game::updateEnemies()
                 {
                     m_isEdge=true;
                 }
-                if(rand()%2==1 && m_currentEnemyBullets<m_enemyBulletsLimit)
-                {
-                    m_enemies.at(i).at(j).fire(m_bullets);
-                    ++m_currentEnemyBullets;
-                }
                 m_enemies.at(i).at(j).move();
             }
         }       
@@ -183,11 +181,11 @@ void Game::updateEnemies()
             m_isEdge=false;
             if(m_enemies.at(0).at(0).getDirection()==Direction::Right)
             {
+                m_currentEnemyBullets=0;
                 if(m_frameTime>=0.1)
                 {
                     m_frameTime-=0.05;
                 }
-                std::cout<<m_frameTime<<std::endl;
                 setDirectionToEnemies(Direction::Left);
                 for (size_t i = 0; i < m_enemiesRows; ++i)
                 {
@@ -199,11 +197,11 @@ void Game::updateEnemies()
             }
             else if(m_enemies.at(0).at(0).getDirection()==Direction::Left)
             {
+                m_currentEnemyBullets=0;
                 if(m_frameTime>0.1)
                 {
                     m_frameTime-=0.05;
                 }
-                std::cout<<m_frameTime<<std::endl;
                 setDirectionToEnemies(Direction::Right);
                 for (size_t i = 0; i < m_enemiesRows; ++i)
                 {
@@ -214,9 +212,20 @@ void Game::updateEnemies()
                 }  
             }
         }
-        
         m_enemyElapsed-=sf::seconds(m_frameTime);
     }
+    if(m_enemyShootingIntervalElapsed.asSeconds()>= m_shootingInterval)
+    {
+        if(m_enemies.at(rndRow).at(rndCol).isAlive() && m_currentEnemyBullets<m_enemyBulletsLimit)
+        {
+            m_enemies.at(rndRow).at(rndCol).fire(m_bullets);
+            ++m_currentEnemyBullets; 
+            m_enemyShootingIntervalElapsed-=sf::seconds(m_shootingInterval);
+        }
+        
+    }
+    
+    
 }
 bool Game::isLost()
 {
@@ -237,17 +246,18 @@ void Game::reset()
     m_enemiesRows=3;
     m_enemiesColumns=12;
     m_gapBetweenEnemies = 30;
-    m_frameTime=0.3;
+    m_frameTime=0.5;
+    m_shootingInterval=1.0;
     m_isEdge = false;
     m_currentEnemyBullets = 0;
-    m_enemyBulletsLimit = 4;
+    m_enemyBulletsLimit = 3;
     initEnemies();
 }
 void Game::lose()
 {
     m_enemies.clear();
     reset();
-    std::cout<<"LOSE!\n";
+    //std::cout<<"LOSE!\n";
 }
 sf::Time Game::getElapsed() { return m_elapsed; }
 void Game::restartClock() { m_elapsed=m_clock.restart(); }
@@ -255,6 +265,18 @@ void Game::restartClock() { m_elapsed=m_clock.restart(); }
 sf::Time Game::getEnemyElapsed() { return m_enemyElapsed; }
 void Game::restartEnemyClock() { m_enemyElapsed+=m_enemyClock.restart(); }
 
+sf::Time Game::getEnemyShootingIntervalElapsed(){ return m_enemyShootingIntervalElapsed; }
+void Game::restartEnemyShootingIntervalClock() { m_enemyShootingIntervalElapsed+=m_enemyShootingIntervalClock.restart(); }
 
 Window* Game::getWindow() { return &m_window; }
 Ship* Game::getShip() { return &m_ship; }
+int Game::getShipBullets()
+{
+    int count=0;
+    for (size_t i = 0; i < m_bullets.size(); ++i)
+    {
+        if(m_bullets.at(i).getBulletType()==BulletTypes::Ship && m_bullets.at(i).isAlive())
+            ++count;
+    }
+    return count;
+}

@@ -22,7 +22,7 @@ public:
     void move(sf::Time elapsed);
     bool checkCollisionWith(const sf::FloatRect &rect);
     void render(sf::RenderWindow &renderWindow);
-
+    void die();
     void setPosition(sf::Vector2f position);
     void setBulletType(BulletTypes type);
     void setSpeed(int speed);

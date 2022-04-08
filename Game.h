@@ -21,9 +21,12 @@ private:
     int m_gapBetweenEnemies;
     sf::Clock m_clock;
     sf::Clock m_enemyClock;
+    sf::Clock m_enemyShootingIntervalClock;
     sf::Time m_elapsed;
     sf::Time m_enemyElapsed;
+    sf::Time m_enemyShootingIntervalElapsed;
     float m_frameTime;
+    float m_shootingInterval;
     int m_enemyBulletsLimit;
     int m_currentEnemyBullets;
     bool m_isEdge;
@@ -42,12 +45,15 @@ public:
     Ship *getShip();
     sf::Time getElapsed();
     sf::Time getEnemyElapsed();
+    sf::Time getEnemyShootingIntervalElapsed();
     void restartClock();
     void restartEnemyClock();
+    void restartEnemyShootingIntervalClock();
     void moveEnemiesDown();
     void setDirectionToEnemies(Direction);
     bool isLost();
     void lose();
+    int getShipBullets();
 };
 
 #endif

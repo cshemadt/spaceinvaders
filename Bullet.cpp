@@ -28,6 +28,7 @@ void Bullet::move(sf::Time elapsed)
     }
     
 }
+void Bullet::die() { m_isAlive = false; }
 void Bullet::render(sf::RenderWindow &renderWindow) { renderWindow.draw(m_bulletRect); }
 bool Bullet::checkCollisionWith(const sf::FloatRect &rect)
 {
