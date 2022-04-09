@@ -10,11 +10,11 @@ private:
     sf::Vector2u m_windowSize;
     int m_speed;
     int m_startLocationOffset;
-    bool m_isAlive;
+    
 public:
     Ufo(sf::Vector2u windowSize);
-    ~Ufo()=default;
-
+    ~Ufo();
+    bool isAlive;
     void setPosition(const sf::Vector2f &position);
     void setSpeed(int speed);
 
@@ -26,7 +26,7 @@ public:
     sf::Vector2f getPosition();
     sf::Sprite *getSprite();
     sf::Vector2u getSize();
-    bool isAlive() const;
+    bool getIsAlive() const;
     int getSpeed() const;
 };
 #endif

@@ -18,7 +18,7 @@ private:
     Textbox m_scoreTextBox;
     std::vector<std::vector<Enemy>> m_enemies;
     std::vector<Bullet> m_bullets;
-    std::vector<Ufo> m_ufos;
+    Ufo m_ufo;
 
     int m_enemiesRows;
     int m_enemiesColumns;
@@ -26,11 +26,17 @@ private:
     sf::Clock m_clock;
     sf::Clock m_enemyClock;
     sf::Clock m_enemyShootingIntervalClock;
+    sf::Clock m_ufoClock;
+    sf::Clock m_ufoMoveClock;
     sf::Time m_elapsed;
     sf::Time m_enemyElapsed;
     sf::Time m_enemyShootingIntervalElapsed;
+    sf::Time m_ufoElapsed;
+    sf::Time m_ufoMoveElapsed;
     float m_frameTime;
+    float m_ufoSpeed;
     float m_shootingInterval;
+    float m_ufoInterval;
     int m_enemyBulletsLimit;
     int m_currentEnemyBullets;
     int m_score;
@@ -49,14 +55,19 @@ public:
     void updateBullets();
     void updateEnemies();
     void updateLabels();
+    void updateUfo();
     Window *getWindow();
     Ship *getShip();
     sf::Time getElapsed();
     sf::Time getEnemyElapsed();
     sf::Time getEnemyShootingIntervalElapsed();
+    sf::Time getUfoElapsed();
+    sf::Time getUfoMoveElapsed();
     void restartClock();
     void restartEnemyClock();
     void restartEnemyShootingIntervalClock();
+    void restartUfoClock();
+    void restartUfoMoveClock();
     void moveEnemiesDown();
     void setDirectionToEnemies(Direction);
     bool isLost();

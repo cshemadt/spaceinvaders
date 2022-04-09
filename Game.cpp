@@ -3,7 +3,7 @@
 #include "Enemy.h"
 #include <iostream>
 #include <algorithm>
-Game::Game() : m_window{"Space Invaders",sf::Vector2u {800,600}}, m_ship{getWindow()->getWindowSize()},  m_scoreTextBox(sf::Vector2f(5,m_window.getWindowSize().y-75), 100, 50, 25, "")
+Game::Game() : m_window{"Space Invaders",sf::Vector2u {800,600}}, m_ship{getWindow()->getWindowSize()}, m_ufo(getWindow()->getWindowSize()) , m_scoreTextBox(sf::Vector2f(5,m_window.getWindowSize().y-50), 100, 50, 25, "")
 {
     reset(); 
 }
@@ -19,7 +19,7 @@ void Game::handleInput()
     {
         m_ship.move(Direction::Right, m_elapsed);
     }
-    if(getShipBullets()==0 && sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Mouse::isButtonPressed(sf::Mouse::Left))
+    if(getShipBullets()==0 && (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Mouse::isButtonPressed(sf::Mouse::Left)))
     {
         m_ship.fire(m_bullets);
     }
@@ -48,14 +48,21 @@ void Game::render()
     }
     m_ship.render(*m_window.getRenderWindow());
     m_scoreTextBox.render(*m_window.getRenderWindow());
-    Ufo ufo(m_window.getWindowSize());
-    ufo.render(*m_window.getRenderWindow());
+    if(m_ufo.isAlive)
+    {
+        m_ufo.render(*m_window.getRenderWindow());  
+    }
     m_window.endDraw();
 }
 void Game::update() 
 {
     getWindow()->update();
-    tick();   
+    tick();
+    std::cout<<m_ufoMoveElapsed.asSeconds()<<std::endl;
+    if(!m_ufo.getIsAlive())
+    {
+        m_ufoMoveElapsed=m_ufoMoveClock.restart();
+    }
 }
 void Game::moveEnemiesDown()
 {
@@ -89,7 +96,7 @@ void Game::initEnemies()
         }
         m_enemies.push_back(enemies_subvector);
     }
-    //---------------------------- DRAWING ENEMIES ----------------------------
+    //---------------------------- INIT ENEMIES ----------------------------
     for (size_t i = 0; i < m_enemiesRows; ++i)
     {
         for (size_t j = 0; j < m_enemiesColumns; ++j)
@@ -114,7 +121,7 @@ void Game::tick()
     //---------------------------- UPDATE ENEMIES STATE ----------------------------
     updateEnemies();
     updateLabels();
-
+    updateUfo();
 }
 void Game::updateBullets()
 {
@@ -143,7 +150,6 @@ void Game::updateBullets()
                         m_enemies.at(i).at(j).die();
                         m_bullets.erase(m_bullets.begin()+k);
                         m_score+=m_scoreIncrement;
-                        std::cout<<m_score<<std::endl;
                     }
                 }               
             }
@@ -240,6 +246,25 @@ void Game::updateLabels()
 {
      m_scoreTextBox.setText("Score "+std::to_string(m_score));
 }
+void Game::updateUfo()
+{
+    if(m_ufo.getPosition().x<=0)
+    {
+        m_ufo.die();
+        
+    }
+    if(m_ufoElapsed.asSeconds() >= m_ufoInterval)
+    {
+        m_ufo.isAlive = true;
+        m_ufoElapsed-=sf::seconds(m_ufoInterval);
+    }
+    if(m_ufo.getIsAlive() && m_ufoMoveElapsed.asSeconds() >= m_ufoSpeed)
+    {
+        m_ufo.move();
+        m_ufoMoveElapsed-=sf::seconds(m_ufoSpeed);
+    }
+    
+}
 bool Game::isLost()
 {
     for (size_t i = 0; i < m_enemiesRows; ++i)
@@ -275,11 +300,16 @@ void Game::reset()
     m_enemiesRows=3;
     m_enemiesColumns=12;
     m_gapBetweenEnemies = 30;
-    m_frameTime=0.7;
-    m_shootingInterval=2.0;
+    
+    m_frameTime=0.7f;
+    m_shootingInterval=2.0f;
+    m_ufoInterval=4.0f;   
+    m_ufoSpeed=0.1f;
+
     m_isEdge = false;
     m_currentEnemyBullets = 0;
     m_enemyBulletsLimit = 4;
+    
     m_score=0;
     m_scoreIncrement=10;
     initEnemies();
@@ -290,15 +320,19 @@ void Game::gameOver()
     m_bullets.clear();
     reset();
 }
+//---------------------------- TIME MANAGMENT---------------------------- 
 sf::Time Game::getElapsed() { return m_elapsed; }
 void Game::restartClock() { m_elapsed=m_clock.restart(); }
 
 sf::Time Game::getEnemyElapsed() { return m_enemyElapsed; }
-void Game::restartEnemyClock() { m_enemyElapsed+=m_enemyClock.restart(); }
+void Game::restartEnemyClock() { m_enemyElapsed+=m_enemyClock.restart();}
 
 sf::Time Game::getEnemyShootingIntervalElapsed(){ return m_enemyShootingIntervalElapsed; }
 void Game::restartEnemyShootingIntervalClock() { m_enemyShootingIntervalElapsed+=m_enemyShootingIntervalClock.restart(); }
 
+sf::Time Game::getUfoElapsed(){ return m_ufoElapsed; }
+void Game::restartUfoClock() { m_ufoElapsed+=m_ufoClock.restart(); }
+void Game::restartUfoMoveClock() { m_ufoMoveElapsed+=m_ufoMoveClock.restart(); }
 Window* Game::getWindow() { return &m_window; }
 Ship* Game::getShip() { return &m_ship; }
 int Game::getShipBullets()

@@ -13,5 +13,7 @@ int main()
         game.restartEnemyClock();
         game.restartEnemyShootingIntervalClock();
         game.restartClock();
+        game.restartUfoMoveClock();
+        game.restartUfoClock();
     }
 }
