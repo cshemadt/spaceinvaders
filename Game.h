@@ -29,6 +29,8 @@ private:
     float m_shootingInterval;
     int m_enemyBulletsLimit;
     int m_currentEnemyBullets;
+    int m_score;
+    int m_scoreIncrement;
     bool m_isEdge;
     bool m_isWin;
     void initEnemies();
@@ -55,9 +57,13 @@ public:
     bool isLost();
     bool isWin();
     bool isAllDead();
-    void lose();
+    void gameOver();
     int getShipBullets();
     std::vector<Enemy> getAliveEnemies();
+    void increaseScore();
+    int getScore();
+    void setScoreIncrement();
+    int getScoreIncrement();
 
 };
 

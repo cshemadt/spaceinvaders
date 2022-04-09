@@ -47,9 +47,7 @@ void Game::render()
             m_bullets.at(i).render(*m_window.getRenderWindow());
         }
     }
-    
-    m_ship.render(*m_window.getRenderWindow());  
-    
+    m_ship.render(*m_window.getRenderWindow());    
     m_window.endDraw();
 }
 void Game::update() 
@@ -106,16 +104,11 @@ void Game::tick()
 {
     //---------------------------- UPDATE BULLETS STATE ----------------------------
     updateBullets();
-    //---------------------------- CHECK COLLISION BETWEEN ENEMIES AND SHIP ----------------------------
-    if(isLost())
-        lose();
-    if(isWin())
+    //---------------------------- LOSE AND WIN CONDITIONS ----------------------------
+    if(isLost() || isWin())
     {
-        m_enemies.clear();
-        std::cout<<"WIN!!\n";
-        reset();
+        gameOver();
     }
-
     //---------------------------- UPDATE ENEMIES STATE ----------------------------
     updateEnemies();
 
@@ -154,7 +147,7 @@ void Game::updateBullets()
         {
             if(m_bullets.at(i).isAlive() && m_bullets.at(i).getBulletType()==BulletTypes::Enemy && m_bullets.at(i).checkCollisionWith(m_ship.getSprite()->getGlobalBounds()))
             {
-                lose();
+                gameOver();
             }
         }
         
@@ -187,7 +180,8 @@ void Game::updateEnemies()
                 }
                 m_enemies.at(i).at(j).move();
             }
-        }       
+        }      
+        //---------------------------- 'SNAKE' ROTATION LOGIC ---------------------------- 
         if(m_isEdge)
         {
             moveEnemiesDown();
@@ -233,8 +227,6 @@ void Game::updateEnemies()
         {
             m_enemies.at(rndRow).at(rndCol).fire(m_bullets);
             m_currentEnemyBullets++;
-            std::cout<<m_currentEnemyBullets<<" "<< m_enemyBulletsLimit<<std::endl;
-            std::cout<<"-----------\n";
         }
         m_enemyShootingIntervalElapsed-=sf::seconds(m_shootingInterval);
         
@@ -278,17 +270,17 @@ void Game::reset()
     m_enemiesColumns=12;
     m_gapBetweenEnemies = 30;
     m_frameTime=0.7;
-    m_shootingInterval=1.0;
+    m_shootingInterval=2.0;
     m_isEdge = false;
     m_currentEnemyBullets = 0;
-    m_enemyBulletsLimit = 3;
+    m_enemyBulletsLimit = 4;
     initEnemies();
 }
-void Game::lose()
+void Game::gameOver()
 {
     m_enemies.clear();
+    m_bullets.clear();
     reset();
-    //std::cout<<"LOSE!\n";
 }
 sf::Time Game::getElapsed() { return m_elapsed; }
 void Game::restartClock() { m_elapsed=m_clock.restart(); }
