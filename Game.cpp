@@ -3,10 +3,9 @@
 #include "Enemy.h"
 #include <iostream>
 #include <algorithm>
-Game::Game() : m_window{"Space Invaders",sf::Vector2u {800,600}}, m_ship{getWindow()->getWindowSize()}
+Game::Game() : m_window{"Space Invaders",sf::Vector2u {800,600}}, m_ship{getWindow()->getWindowSize()},  m_scoreTextBox(sf::Vector2f(5,0), 100, 50, 25, "")
 {
-    reset();
-    
+    reset(); 
 }
 Game::~Game() = default;
 
@@ -47,7 +46,8 @@ void Game::render()
             m_bullets.at(i).render(*m_window.getRenderWindow());
         }
     }
-    m_ship.render(*m_window.getRenderWindow());    
+    m_ship.render(*m_window.getRenderWindow());
+    m_scoreTextBox.render(*m_window.getRenderWindow());
     m_window.endDraw();
 }
 void Game::update() 
@@ -111,6 +111,7 @@ void Game::tick()
     }
     //---------------------------- UPDATE ENEMIES STATE ----------------------------
     updateEnemies();
+    updateLabels();
 
 }
 void Game::updateBullets()
@@ -230,11 +231,12 @@ void Game::updateEnemies()
             m_enemies.at(rndRow).at(rndCol).fire(m_bullets);
             m_currentEnemyBullets++;
         }
-        m_enemyShootingIntervalElapsed-=sf::seconds(m_shootingInterval);
-        
+        m_enemyShootingIntervalElapsed-=sf::seconds(m_shootingInterval);     
     }
-    
-    
+}
+void Game::updateLabels()
+{
+     m_scoreTextBox.setText("Score "+std::to_string(m_score));
 }
 bool Game::isLost()
 {
@@ -267,6 +269,7 @@ bool Game::isWin()
 }
 void Game::reset()
 {
+    
     m_isWin=false;
     m_enemiesRows=3;
     m_enemiesColumns=12;

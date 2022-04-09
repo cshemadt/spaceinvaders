@@ -14,7 +14,7 @@ class Game
 private:
     Window m_window;
     Ship m_ship;
-    Textbox scoreTextBox;
+    Textbox m_scoreTextBox;
     std::vector<std::vector<Enemy>> m_enemies;
     std::vector<Bullet> m_bullets;
 
@@ -46,6 +46,7 @@ public:
     void reset();
     void updateBullets();
     void updateEnemies();
+    void updateLabels();
     Window *getWindow();
     Ship *getShip();
     sf::Time getElapsed();

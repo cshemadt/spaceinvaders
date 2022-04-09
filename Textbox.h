@@ -12,11 +12,11 @@ private:
     sf::Font m_font;
     float m_fontSize;
 public:
-    Textbox(const sf::Vector2f &position=sf::Vector2f(0,0), float width=100, float height=50, float fontSize=14, std::string text="");
+    Textbox(const sf::Vector2f &position, float width, float height, float fontSize, std::string text);
     ~Textbox()=default;
     void render(sf::RenderWindow &renderWindow);
     sf::Text getText();
-    void setText(std::string &text);
+    void setText(const std::string &text);
     float getWidth();
     void setWidth(float width);
     float getHeight();
