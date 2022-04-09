@@ -1,0 +1,31 @@
+#pragma once
+#ifndef SPACE_INVADERS_TEXTBOX_H
+#define SPACE_INVADERS_TEXTBOX_H
+#include <SFML/Graphics.hpp>
+class Textbox
+{
+private:
+    sf::Vector2f m_position;
+    float m_width;
+    float m_height;
+    sf::Text m_text;
+    sf::Font m_font;
+    float m_fontSize;
+public:
+    Textbox(const sf::Vector2f &position=sf::Vector2f(0,0), float width=100, float height=50, float fontSize=14, std::string text="");
+    ~Textbox()=default;
+    void render(sf::RenderWindow &renderWindow);
+    sf::Text getText();
+    void setText(std::string &text);
+    float getWidth();
+    void setWidth(float width);
+    float getHeight();
+    void setHeight(float height);
+    float getFontSize();
+    void setFontSize(float size);
+    sf::Vector2f getPosition();
+    void setPosition(sf::Vector2f &position);
+    void setFont(sf::Font &font);
+};
+
+#endif

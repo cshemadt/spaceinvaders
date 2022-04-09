@@ -139,6 +139,8 @@ void Game::updateBullets()
                     {
                         m_enemies.at(i).at(j).die();
                         m_bullets.erase(m_bullets.begin()+k);
+                        m_score+=m_scoreIncrement;
+                        std::cout<<m_score<<std::endl;
                     }
                 }               
             }
@@ -274,6 +276,8 @@ void Game::reset()
     m_isEdge = false;
     m_currentEnemyBullets = 0;
     m_enemyBulletsLimit = 4;
+    m_score=0;
+    m_scoreIncrement=10;
     initEnemies();
 }
 void Game::gameOver()
