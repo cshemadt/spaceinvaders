@@ -20,8 +20,6 @@ private:
     sf::Texture m_shipTexture;
     int m_hp;
     int m_speed;
-    int m_score;
-    int m_scoreIncrement;
     bool m_isAlive;
 public:
     Ship(sf::Vector2u windowSize);

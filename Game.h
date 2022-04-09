@@ -9,6 +9,7 @@
 #include "Bullet.h"
 #include <vector>
 #include "Textbox.h"
+#include "Ufo.h"
 class Game 
 {
 private:
@@ -17,6 +18,7 @@ private:
     Textbox m_scoreTextBox;
     std::vector<std::vector<Enemy>> m_enemies;
     std::vector<Bullet> m_bullets;
+    std::vector<Ufo> m_ufos;
 
     int m_enemiesRows;
     int m_enemiesColumns;

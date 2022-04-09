@@ -18,9 +18,7 @@ void Ship::reset()
     m_hp = 3;
     m_isAlive = true;
     m_speed = 400;
-    m_score = 0;
     m_direction = Direction::None;
-    m_scoreIncrement = 10;
     setPosition(m_windowSize.x/2.0f, m_windowSize.y-100);
 }
 void Ship::spriteInit() 

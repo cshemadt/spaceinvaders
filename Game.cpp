@@ -3,7 +3,7 @@
 #include "Enemy.h"
 #include <iostream>
 #include <algorithm>
-Game::Game() : m_window{"Space Invaders",sf::Vector2u {800,600}}, m_ship{getWindow()->getWindowSize()},  m_scoreTextBox(sf::Vector2f(5,0), 100, 50, 25, "")
+Game::Game() : m_window{"Space Invaders",sf::Vector2u {800,600}}, m_ship{getWindow()->getWindowSize()},  m_scoreTextBox(sf::Vector2f(5,m_window.getWindowSize().y-75), 100, 50, 25, "")
 {
     reset(); 
 }
@@ -48,6 +48,8 @@ void Game::render()
     }
     m_ship.render(*m_window.getRenderWindow());
     m_scoreTextBox.render(*m_window.getRenderWindow());
+    Ufo ufo(m_window.getWindowSize());
+    ufo.render(*m_window.getRenderWindow());
     m_window.endDraw();
 }
 void Game::update() 
@@ -269,7 +271,6 @@ bool Game::isWin()
 }
 void Game::reset()
 {
-    
     m_isWin=false;
     m_enemiesRows=3;
     m_enemiesColumns=12;
