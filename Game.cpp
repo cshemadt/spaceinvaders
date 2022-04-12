@@ -58,11 +58,6 @@ void Game::update()
 {
     getWindow()->update();
     tick();
-    std::cout<<m_ufoMoveElapsed.asSeconds()<<std::endl;
-    if(!m_ufo.getIsAlive())
-    {
-        m_ufoMoveElapsed=m_ufoMoveClock.restart();
-    }
 }
 void Game::moveEnemiesDown()
 {
@@ -72,8 +67,7 @@ void Game::moveEnemiesDown()
         {
             m_enemies.at(i).at(j).setPosition(m_enemies.at(i).at(j).getPosition().x, m_enemies.at(i).at(j).getPosition().y+(m_enemies.at(i).at(j).getSize().y*2));
         }
-    }
-    
+    }    
 }
 void Game::setDirectionToEnemies(Direction direction)
 {
@@ -248,22 +242,20 @@ void Game::updateLabels()
 }
 void Game::updateUfo()
 {
-    if(m_ufo.getPosition().x<=0)
+    if(m_ufo.getIsAlive() && m_ufo.getPosition().x<=0)
     {
         m_ufo.die();
-        
+        m_ufoElapsed=m_ufoClock.restart();
     }
-    if(m_ufoElapsed.asSeconds() >= m_ufoInterval)
+    if(m_ufoElapsed.asSeconds() >= m_ufoInterval && !m_ufo.getIsAlive())
     {
         m_ufo.isAlive = true;
-        m_ufoElapsed-=sf::seconds(m_ufoInterval);
     }
-    if(m_ufo.getIsAlive() && m_ufoMoveElapsed.asSeconds() >= m_ufoSpeed)
+    if(m_ufo.getIsAlive())
     {
-        m_ufo.move();
-        m_ufoMoveElapsed-=sf::seconds(m_ufoSpeed);
+        m_ufo.move(m_ufoMoveElapsed.asSeconds());
+        std::cout<<m_ufo.getPosition().x<<std::endl;
     }
-    
 }
 bool Game::isLost()
 {
@@ -332,7 +324,7 @@ void Game::restartEnemyShootingIntervalClock() { m_enemyShootingIntervalElapsed+
 
 sf::Time Game::getUfoElapsed(){ return m_ufoElapsed; }
 void Game::restartUfoClock() { m_ufoElapsed+=m_ufoClock.restart(); }
-void Game::restartUfoMoveClock() { m_ufoMoveElapsed+=m_ufoMoveClock.restart(); }
+void Game::restartUfoMoveClock() { m_ufoMoveElapsed=m_ufoMoveClock.restart(); }
 Window* Game::getWindow() { return &m_window; }
 Ship* Game::getShip() { return &m_ship; }
 int Game::getShipBullets()

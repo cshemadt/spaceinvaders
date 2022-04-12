@@ -20,7 +20,7 @@ public:
 
     void spriteInit();
     void die();
-    void move();
+    void move(float elapsed);
     void reset();
     void render(sf::RenderWindow &renderWindow);
     sf::Vector2f getPosition();
