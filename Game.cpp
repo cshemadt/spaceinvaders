@@ -254,8 +254,22 @@ void Game::updateUfo()
     if(m_ufo.getIsAlive())
     {
         m_ufo.move(m_ufoMoveElapsed.asSeconds());
-        std::cout<<m_ufo.getPosition().x<<std::endl;
     }
+    if(m_ufo.getIsAlive())
+    {
+        for (size_t i = 0; i < m_bullets.size(); i++)
+        {
+            if(m_bullets.at(i).getBulletType() == BulletTypes::Ship && m_bullets.at(i).checkCollisionWith(m_ufo.getSprite()->getGlobalBounds()))
+            {
+                m_ufo.die();
+                m_ufoElapsed=m_ufoClock.restart();
+                m_bullets.at(i).die();
+                m_score+=100;
+            }
+        }
+    }
+    
+    
 }
 bool Game::isLost()
 {
@@ -304,12 +318,14 @@ void Game::reset()
     
     m_score=0;
     m_scoreIncrement=10;
+    m_ufoElapsed = m_ufoClock.restart();
     initEnemies();
 }
 void Game::gameOver()
 {
     m_enemies.clear();
     m_bullets.clear();
+    m_ufo.die();
     reset();
 }
 //---------------------------- TIME MANAGMENT---------------------------- 
