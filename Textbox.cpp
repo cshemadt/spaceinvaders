@@ -26,3 +26,7 @@ void Textbox::render(sf::RenderWindow &renderWindow)
 {
     renderWindow.draw(m_text);
 }
+void Textbox::setColor(const sf::Color &color)
+{
+    m_text.setFillColor(color);
+}

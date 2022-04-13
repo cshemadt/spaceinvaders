@@ -23,10 +23,15 @@ void Game::handleInput()
     {
         m_ship.move(Direction::Right, m_elapsed);
     }
-    if(getShipBullets()==0 && (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Mouse::isButtonPressed(sf::Mouse::Left)))
+    if(getShipBullets()==0 && m_state==GameStates::Game && (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)))
     {
         m_ship.fire(m_bullets);
     }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && m_state==GameStates::GameOver) 
+    {
+        m_state=GameStates::Game;
+    }
+    
 }
 void Game::render() 
 {
@@ -84,14 +89,15 @@ void Game::update()
     getWindow()->update();
     switch(m_state)
     {
+        case GameStates::GameOver:
+        {
+            m_gameOver.update();
+            break;
+        }
         case GameStates::Game:
         {
             tick();
             break;
-        }
-        case GameStates::GameOver:
-        {
-            m_gameOver.update();
         }
     }
     
@@ -339,7 +345,7 @@ bool Game::isWin()
 }
 void Game::reset()
 {
-    m_state=GameStates::GameOver;
+    m_state=GameStates::Game;
     m_isWin=false;
     m_enemiesRows=3;
     m_enemiesColumns=12;
@@ -365,6 +371,7 @@ void Game::gameOver()
     m_bullets.clear();
     m_ufo.die();
     reset();
+    m_state=GameStates::GameOver;
 }
 //---------------------------- TIME MANAGMENT---------------------------- 
 sf::Time Game::getElapsed() { return m_elapsed; }

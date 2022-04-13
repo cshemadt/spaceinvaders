@@ -26,6 +26,7 @@ public:
     sf::Vector2f getPosition();
     void setPosition(sf::Vector2f &position);
     void setFont(sf::Font &font);
+    void setColor(const sf::Color &color);
 };
 
 #endif

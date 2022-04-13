@@ -15,6 +15,6 @@ public:
     void update();
     void render(sf::RenderWindow &window);
     GameOver(Window &window);
-    ~GameOver()=default; 
+    ~GameOver()=default;
 };
 #endif

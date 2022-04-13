@@ -23,10 +23,6 @@ void Window::update()
         {
             m_isClosed=true;
         }
-        else if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F5) 
-        {
-            toggleFullscreen();
-        }
         if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::LAlt+sf::Keyboard::F4) 
         {
             m_isClosed=true;
