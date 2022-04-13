@@ -12,7 +12,7 @@ private:
     sf::Font m_font;
     float m_fontSize;
 public:
-    Textbox(const sf::Vector2f &position, float width, float height, float fontSize, std::string text);
+    Textbox(const sf::Vector2f &position, float width, float height, float fontSize, float letterSpacing, std::string text);
     ~Textbox()=default;
     void render(sf::RenderWindow &renderWindow);
     sf::Text getText();

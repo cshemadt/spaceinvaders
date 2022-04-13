@@ -12,7 +12,7 @@ void Ufo::reset()
     isAlive=false;
     m_startLocationOffset = 10;
     m_speed=200;
-    setPosition(sf::Vector2f(m_windowSize.x-m_size.x*m_sprite.getScale().x-m_startLocationOffset, 0+m_startLocationOffset));
+    setPosition(sf::Vector2f(m_windowSize.x+m_size.x*m_sprite.getScale().x-m_startLocationOffset, 0+m_startLocationOffset));
 }
 void Ufo::spriteInit()
 {
@@ -37,7 +37,7 @@ void Ufo::move(float elapsed)
 void Ufo::die() 
 {
     isAlive=false; 
-    setPosition(sf::Vector2f(m_windowSize.x-m_size.x*m_sprite.getScale().x-m_startLocationOffset, 0+m_startLocationOffset));
+    setPosition(sf::Vector2f(m_windowSize.x+m_size.x*m_sprite.getScale().x-m_startLocationOffset, 0+m_startLocationOffset));
 }
 void Ufo::setPosition(const sf::Vector2f &position){ m_sprite.setPosition(position); }
 void Ufo::setSpeed(int speed) { m_speed=speed; }

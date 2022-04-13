@@ -3,7 +3,11 @@
 #include "Enemy.h"
 #include <iostream>
 #include <algorithm>
-Game::Game() : m_window{"Space Invaders",sf::Vector2u {800,600}}, m_ship{getWindow()->getWindowSize()}, m_ufo(getWindow()->getWindowSize()) , m_scoreTextBox(sf::Vector2f(5,m_window.getWindowSize().y-50), 100, 50, 25, "")
+Game::Game() : m_window{"Space Invaders",sf::Vector2u {800,600}}, 
+               m_ship{getWindow()->getWindowSize()}, 
+               m_ufo(getWindow()->getWindowSize()), 
+               m_scoreTextBox(sf::Vector2f(5,m_window.getWindowSize().y-50), 100, 50, 25, 10,""),
+               m_gameOver(m_window)
 {
     reset(); 
 }
@@ -28,6 +32,24 @@ void Game::render()
 {
     m_window.beginDraw();
     //---------------------------- DRAWING ENEMIES ----------------------------
+    switch(m_state)
+    {
+        case GameStates::Game:
+        {
+            drawGame();
+            break;
+        }
+        case GameStates::GameOver:
+        {
+            drawGameOver();
+            break;
+        }
+    }
+    
+    m_window.endDraw();
+}
+void Game::drawGame()
+{
     for (size_t i = 0; i < m_enemiesRows; ++i)
     {
         for (size_t j = 0; j < m_enemiesColumns; ++j)
@@ -52,12 +74,27 @@ void Game::render()
     {
         m_ufo.render(*m_window.getRenderWindow());  
     }
-    m_window.endDraw();
+}
+void Game::drawGameOver()
+{
+    m_gameOver.render(*m_window.getRenderWindow());
 }
 void Game::update() 
 {
     getWindow()->update();
-    tick();
+    switch(m_state)
+    {
+        case GameStates::Game:
+        {
+            tick();
+            break;
+        }
+        case GameStates::GameOver:
+        {
+            m_gameOver.update();
+        }
+    }
+    
 }
 void Game::moveEnemiesDown()
 {
@@ -242,7 +279,7 @@ void Game::updateLabels()
 }
 void Game::updateUfo()
 {
-    if(m_ufo.getIsAlive() && m_ufo.getPosition().x<=0)
+    if(m_ufo.getIsAlive() && m_ufo.getPosition().x <= -50)
     {
         m_ufo.die();
         m_ufoElapsed=m_ufoClock.restart();
@@ -302,6 +339,7 @@ bool Game::isWin()
 }
 void Game::reset()
 {
+    m_state=GameStates::GameOver;
     m_isWin=false;
     m_enemiesRows=3;
     m_enemiesColumns=12;
