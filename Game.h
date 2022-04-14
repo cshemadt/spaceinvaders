@@ -52,6 +52,7 @@ private:
     int m_currentEnemyBullets;
     int m_score;
     int m_bestScore;
+    int m_lastScore;
     int m_scoreIncrement;
     bool m_isEdge;
     bool m_isWin;

@@ -108,13 +108,12 @@ void Game::update()
     {
         case GameStates::GameOver:
         {
-            m_gameOver.update();
+            m_gameOver.update(m_lastScore, m_bestScore);
             break;
         }
         case GameStates::Pause:
         {
             m_pause.update(m_score);
-            
             break;
         }
         case GameStates::Game:
@@ -171,11 +170,6 @@ void Game::initEnemies()
 }
 void Game::tick()
 {
-    // restartClock();
-    // restartEnemyClock();
-    // restartEnemyShootingIntervalClock();
-    // restartUfoMoveClock();
-    // restartUfoClock();
     //---------------------------- UPDATE BULLETS STATE ----------------------------
     updateBullets();
     //---------------------------- LOSE AND WIN CONDITIONS ----------------------------
@@ -381,15 +375,14 @@ void Game::reset()
     m_enemiesColumns=12;
     m_gapBetweenEnemies = 30;
 
-    m_frameTime=0.7f;
-    m_shootingInterval=2.0f;
-    m_ufoInterval=4.0f;
+    m_frameTime=0.5f;
+    m_shootingInterval=2.f;
+    m_ufoInterval=6.0f;
     m_ufoSpeed=0.1f;
-
     m_isEdge = false;
     m_currentEnemyBullets = 0;
     m_enemyBulletsLimit = 4;
-
+    m_lastScore = m_score;
     m_score=0;
     m_scoreIncrement=10;
     m_ufoElapsed = m_ufoClock.restart();
