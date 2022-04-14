@@ -3,23 +3,24 @@
 #include "Enemy.h"
 #include <iostream>
 #include <algorithm>
-Game::Game() : m_window{"Space Invaders",sf::Vector2u {800,600}}, 
-               m_ship{getWindow()->getWindowSize()}, 
-               m_ufo(getWindow()->getWindowSize()), 
-               m_scoreTextBox(sf::Vector2f(5,m_window.getWindowSize().y-50), 100, 50, 25, 10,""),
-               m_gameOver(m_window)
+Game::Game() : m_window{"Space Invaders",sf::Vector2u {800,600}},
+               m_ship{getWindow()->getWindowSize()},
+               m_ufo{getWindow()->getWindowSize()},
+               m_scoreTextBox{sf::Vector2f(5,m_window.getWindowSize().y-50), 100, 50, 25, 10,""},
+               m_gameOver{m_window},
+               m_pause{m_window,m_score}
 {
-    reset(); 
+    m_bestScore=0;
+    reset();
 }
 Game::~Game() = default;
-
-void Game::handleInput() 
+void Game::handleInput()
 {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
+    if (m_state==GameStates::Game && sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
     {
         m_ship.move(Direction::Left, m_elapsed);
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) 
+    if (m_state==GameStates::Game && sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
     {
         m_ship.move(Direction::Right, m_elapsed);
     }
@@ -27,16 +28,23 @@ void Game::handleInput()
     {
         m_ship.fire(m_bullets);
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && m_state==GameStates::GameOver) 
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && m_state==GameStates::GameOver)
     {
         m_state=GameStates::Game;
     }
-    
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && m_state==GameStates::Pause)
+    {
+        m_state=GameStates::Game;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) && m_state==GameStates::Game)
+    {
+        m_state=GameStates::Pause;
+    }
 }
-void Game::render() 
+void Game::render()
 {
     m_window.beginDraw();
-    //---------------------------- DRAWING ENEMIES ----------------------------
+    //---------------------------- DRAWING ----------------------------
     switch(m_state)
     {
         case GameStates::Game:
@@ -49,8 +57,13 @@ void Game::render()
             drawGameOver();
             break;
         }
+        case GameStates::Pause:
+        {
+            drawPause();
+            break;
+        }
     }
-    
+
     m_window.endDraw();
 }
 void Game::drawGame()
@@ -77,14 +90,18 @@ void Game::drawGame()
     m_scoreTextBox.render(*m_window.getRenderWindow());
     if(m_ufo.isAlive)
     {
-        m_ufo.render(*m_window.getRenderWindow());  
+        m_ufo.render(*m_window.getRenderWindow());
     }
 }
 void Game::drawGameOver()
 {
     m_gameOver.render(*m_window.getRenderWindow());
 }
-void Game::update() 
+void Game::drawPause()
+{
+    m_pause.render(*m_window.getRenderWindow());
+}
+void Game::update()
 {
     getWindow()->update();
     switch(m_state)
@@ -94,13 +111,19 @@ void Game::update()
             m_gameOver.update();
             break;
         }
+        case GameStates::Pause:
+        {
+            m_pause.update(m_score);
+            
+            break;
+        }
         case GameStates::Game:
         {
             tick();
             break;
         }
     }
-    
+
 }
 void Game::moveEnemiesDown()
 {
@@ -110,7 +133,7 @@ void Game::moveEnemiesDown()
         {
             m_enemies.at(i).at(j).setPosition(m_enemies.at(i).at(j).getPosition().x, m_enemies.at(i).at(j).getPosition().y+(m_enemies.at(i).at(j).getSize().y*2));
         }
-    }    
+    }
 }
 void Game::setDirectionToEnemies(Direction direction)
 {
@@ -148,6 +171,11 @@ void Game::initEnemies()
 }
 void Game::tick()
 {
+    // restartClock();
+    // restartEnemyClock();
+    // restartEnemyShootingIntervalClock();
+    // restartUfoMoveClock();
+    // restartUfoClock();
     //---------------------------- UPDATE BULLETS STATE ----------------------------
     updateBullets();
     //---------------------------- LOSE AND WIN CONDITIONS ----------------------------
@@ -157,8 +185,10 @@ void Game::tick()
     }
     //---------------------------- UPDATE ENEMIES STATE ----------------------------
     updateEnemies();
+
     updateLabels();
     updateUfo();
+
 }
 void Game::updateBullets()
 {
@@ -172,7 +202,7 @@ void Game::updateBullets()
         {
             m_bullets.erase(m_bullets.begin()+i);
         }
-    }   
+    }
     //---------------------------- BULLETS COLLISIONS ----------------------------
     if(!m_bullets.empty())
     {
@@ -188,7 +218,7 @@ void Game::updateBullets()
                         m_bullets.erase(m_bullets.begin()+k);
                         m_score+=m_scoreIncrement;
                     }
-                }               
+                }
             }
         }
         for (size_t i = 0; i < m_bullets.size(); ++i)
@@ -198,7 +228,7 @@ void Game::updateBullets()
                 gameOver();
             }
         }
-        
+
     }
 }
 void Game::updateEnemies()
@@ -228,8 +258,8 @@ void Game::updateEnemies()
                 }
                 m_enemies.at(i).at(j).move();
             }
-        }      
-        //---------------------------- 'SNAKE' ROTATION LOGIC ---------------------------- 
+        }
+        //---------------------------- 'SNAKE' ROTATION LOGIC ----------------------------
         if(m_isEdge)
         {
             moveEnemiesDown();
@@ -247,7 +277,7 @@ void Game::updateEnemies()
                     {
                         m_enemies.at(i).at(j).move();
                     }
-                }  
+                }
             }
             else if(m_enemies.at(0).at(0).getDirection()==Direction::Left)
             {
@@ -262,7 +292,7 @@ void Game::updateEnemies()
                     {
                         m_enemies.at(i).at(j).move();
                     }
-                }  
+                }
             }
 
             m_currentEnemyBullets=0;
@@ -276,7 +306,7 @@ void Game::updateEnemies()
             m_enemies.at(rndRow).at(rndCol).fire(m_bullets);
             m_currentEnemyBullets++;
         }
-        m_enemyShootingIntervalElapsed-=sf::seconds(m_shootingInterval);     
+        m_enemyShootingIntervalElapsed-=sf::seconds(m_shootingInterval);
     }
 }
 void Game::updateLabels()
@@ -285,7 +315,7 @@ void Game::updateLabels()
 }
 void Game::updateUfo()
 {
-    if(m_ufo.getIsAlive() && m_ufo.getPosition().x <= -50)
+    if(m_state==GameStates::Game && m_ufo.getIsAlive() && m_ufo.getPosition().x <= -50)
     {
         m_ufo.die();
         m_ufoElapsed=m_ufoClock.restart();
@@ -311,8 +341,8 @@ void Game::updateUfo()
             }
         }
     }
-    
-    
+
+
 }
 bool Game::isLost()
 {
@@ -350,16 +380,16 @@ void Game::reset()
     m_enemiesRows=3;
     m_enemiesColumns=12;
     m_gapBetweenEnemies = 30;
-    
+
     m_frameTime=0.7f;
     m_shootingInterval=2.0f;
-    m_ufoInterval=4.0f;   
+    m_ufoInterval=4.0f;
     m_ufoSpeed=0.1f;
 
     m_isEdge = false;
     m_currentEnemyBullets = 0;
     m_enemyBulletsLimit = 4;
-    
+
     m_score=0;
     m_scoreIncrement=10;
     m_ufoElapsed = m_ufoClock.restart();
@@ -370,10 +400,12 @@ void Game::gameOver()
     m_enemies.clear();
     m_bullets.clear();
     m_ufo.die();
+    m_bestScore = std::max(m_bestScore, m_score);
+    std::cout<<m_bestScore<<std::endl;
     reset();
     m_state=GameStates::GameOver;
 }
-//---------------------------- TIME MANAGMENT---------------------------- 
+//---------------------------- TIME MANAGMENT----------------------------
 sf::Time Game::getElapsed() { return m_elapsed; }
 void Game::restartClock() { m_elapsed=m_clock.restart(); }
 

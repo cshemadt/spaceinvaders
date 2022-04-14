@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 project(space_invaders)
-set(SOURCES GameOver.h GameOver.cpp Button.h Button.cpp Ufo.h Ufo.cpp Textbox.cpp Textbox.h Window.cpp Window.h Bullet.h Bullet.cpp Game.cpp Game.h Ship.cpp Ship.h Enemy.cpp Enemy.h)
+set(SOURCES Pause.h Pause.cpp GameOver.h GameOver.cpp Button.h Button.cpp Ufo.h Ufo.cpp Textbox.cpp Textbox.h Window.cpp Window.h Bullet.h Bullet.cpp Game.cpp Game.h Ship.cpp Ship.h Enemy.cpp Enemy.h)
 set(CMAKE_CXX_STANDARD 17)
 find_package(SFML 2.5.1 COMPONENTS graphics audio network system REQUIRED)
 include_directories(${SFML_INCLUDE_DIRS})

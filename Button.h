@@ -7,8 +7,8 @@ class Button
 private:
     sf::RectangleShape m_shape;
     Textbox m_text;
-    bool m_pressed;
 public:
+    bool isPressed;
     Button(sf::Vector2f position, sf::Vector2f size, std::string text);
     ~Button() = default;
     void render(sf::RenderWindow &window);

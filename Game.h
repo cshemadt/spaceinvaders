@@ -10,6 +10,7 @@
 #include <vector>
 #include "Textbox.h"
 #include "Ufo.h"
+#include "Pause.h"
 #include "GameOver.h"
 enum class GameStates
 {
@@ -27,6 +28,7 @@ private:
     std::vector<Bullet> m_bullets;
     Ufo m_ufo;
     GameOver m_gameOver;
+    Pause m_pause;
     GameStates m_state;
 
     int m_enemiesRows;
@@ -49,6 +51,7 @@ private:
     int m_enemyBulletsLimit;
     int m_currentEnemyBullets;
     int m_score;
+    int m_bestScore;
     int m_scoreIncrement;
     bool m_isEdge;
     bool m_isWin;
@@ -56,6 +59,7 @@ private:
     void tick();
     void drawGame();
     void drawGameOver();
+    void drawPause();
 public:
     Game();
     ~Game();
