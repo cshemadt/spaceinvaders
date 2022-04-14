@@ -33,12 +33,6 @@ void Bullet::render(sf::RenderWindow &renderWindow) { renderWindow.draw(m_bullet
 bool Bullet::checkCollisionWith(const sf::FloatRect &rect)
 {
     sf::FloatRect bulletRect=m_bulletRect.getGlobalBounds();
-    // if(bulletRect.left < rect.left+rect.width && bulletRect.left+bulletRect.width > rect.left &&
-    //     bulletRect.top<rect.top+rect.height && bulletRect.top+bulletRect.height > rect.top)
-    // {
-    //     m_isAlive = false;
-    //     return true;
-    // }
     if(bulletRect.intersects(rect))
     {
         m_isAlive = false;
