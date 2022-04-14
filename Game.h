@@ -12,11 +12,13 @@
 #include "Ufo.h"
 #include "Pause.h"
 #include "GameOver.h"
+#include "Win.h"
 enum class GameStates
 {
     Game,
     Pause,
-    GameOver
+    GameOver,
+    Win,
 };
 class Game 
 {
@@ -29,6 +31,7 @@ private:
     Ufo m_ufo;
     GameOver m_gameOver;
     Pause m_pause;
+    Win m_win;
     GameStates m_state;
 
     int m_enemiesRows;
@@ -61,6 +64,7 @@ private:
     void drawGame();
     void drawGameOver();
     void drawPause();
+    void drawWin();
 public:
     Game();
     ~Game();

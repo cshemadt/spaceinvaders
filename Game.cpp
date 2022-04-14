@@ -8,7 +8,8 @@ Game::Game() : m_window{"Space Invaders",sf::Vector2u {800,600}},
                m_ufo{getWindow()->getWindowSize()},
                m_scoreTextBox{sf::Vector2f(5,m_window.getWindowSize().y-50), 100, 50, 25, 10,""},
                m_gameOver{m_window},
-               m_pause{m_window,m_score}
+               m_pause{m_window,m_score},
+               m_win{m_window}
 {
     m_bestScore=0;
     reset();
@@ -40,6 +41,10 @@ void Game::handleInput()
     {
         m_state=GameStates::Pause;
     }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && m_state==GameStates::Win)
+    {
+        m_state=GameStates::Game;
+    }
 }
 void Game::render()
 {
@@ -60,6 +65,11 @@ void Game::render()
         case GameStates::Pause:
         {
             drawPause();
+            break;
+        }
+        case GameStates::Win:
+        {
+            drawWin();
             break;
         }
     }
@@ -101,6 +111,10 @@ void Game::drawPause()
 {
     m_pause.render(*m_window.getRenderWindow());
 }
+void Game::drawWin()
+{
+    m_win.render(*m_window.getRenderWindow());
+}
 void Game::update()
 {
     getWindow()->update();
@@ -119,6 +133,11 @@ void Game::update()
         case GameStates::Game:
         {
             tick();
+            break;
+        }
+        case GameStates::Win:
+        {
+            m_win.update(m_lastScore, m_bestScore);
             break;
         }
     }
@@ -173,9 +192,14 @@ void Game::tick()
     //---------------------------- UPDATE BULLETS STATE ----------------------------
     updateBullets();
     //---------------------------- LOSE AND WIN CONDITIONS ----------------------------
-    if(isLost() || isWin())
+    if(isLost())
     {
         gameOver();
+    }
+    else if (isWin())
+    {
+        gameOver();
+        m_state = GameStates::Win;
     }
     //---------------------------- UPDATE ENEMIES STATE ----------------------------
     updateEnemies();
@@ -376,12 +400,12 @@ void Game::reset()
     m_gapBetweenEnemies = 30;
 
     m_frameTime=0.5f;
-    m_shootingInterval=2.f;
+    m_shootingInterval=1.f;
     m_ufoInterval=6.0f;
     m_ufoSpeed=0.1f;
     m_isEdge = false;
     m_currentEnemyBullets = 0;
-    m_enemyBulletsLimit = 4;
+    m_enemyBulletsLimit = 6;
     m_lastScore = m_score;
     m_score=0;
     m_scoreIncrement=10;
