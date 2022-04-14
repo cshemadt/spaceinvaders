@@ -25,7 +25,7 @@ void Game::handleInput()
     {
         m_ship.move(Direction::Right, m_elapsed);
     }
-    if(m_state==GameStates::Game && (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)))
+    if(getShipBullets()==0 && m_state==GameStates::Game && (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)))
     {
         m_ship.fire(m_bullets);
     }
