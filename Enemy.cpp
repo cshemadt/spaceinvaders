@@ -29,6 +29,7 @@ void Enemy::setDirection(Direction direction) { m_direction = direction; }
 void Enemy::reset() 
 {
     m_size=sf::Vector2u{16,16};
+    m_currentTextureIndex=0;
     m_enemySprite.setPosition(m_windowSize.x/5-30,100);
     m_isAlive=true;
     m_speed=20;
@@ -43,12 +44,24 @@ void Enemy::spriteInit(int index)
     }
     m_enemySprite.setTexture(m_enemyTexture);
     m_enemySprite.setScale(3.f,3.f);
-    m_enemySprite.setTextureRect(sf::IntRect(0,0,16,16));
+    m_enemySprite.setTextureRect(sf::IntRect(m_currentTextureIndex*16,0,16,16));
     m_enemySprite.setOrigin(m_enemySprite.getTextureRect().width/2.f, m_enemySprite.getTextureRect().height/2.f);
 }
 void Enemy::updateCollisionRect()
 {
     m_enemyCollisionRect = sf::FloatRect(m_enemySprite.getGlobalBounds().left, m_enemySprite.getGlobalBounds().top, m_enemySprite.getGlobalBounds().width-8,m_enemySprite.getGlobalBounds().height-8);
+}
+void Enemy::update()
+{
+    if(m_currentTextureIndex == 0)
+    {
+        m_currentTextureIndex = 1;
+    }
+    else if(m_currentTextureIndex == 1)
+    {
+        m_currentTextureIndex = 0;
+    }
+    m_enemySprite.setTextureRect(sf::IntRect(m_currentTextureIndex*16,0,16,16));
 }
 void Enemy::die() { m_isAlive = false; }
 

@@ -15,6 +15,7 @@ protected:
     sf::Texture m_enemyTexture;
     int m_speed;
     bool m_isAlive;
+    int m_currentTextureIndex;
 public:
     Enemy(sf::Vector2u windowSize);
     ~Enemy()=default;
@@ -29,6 +30,7 @@ public:
     void fire(std::vector<Bullet> &bullets);
     void reset();
     void updateCollisionRect();
+    void update();
     void render(sf::RenderWindow &renderWindow);
 
     sf::Vector2f getPosition();

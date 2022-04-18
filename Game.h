@@ -33,7 +33,8 @@ private:
     Pause m_pause;
     Win m_win;
     GameStates m_state;
-
+    sf::Sprite m_background_sprite;
+    sf::Texture m_background_texture;
     int m_enemiesRows;
     int m_enemiesColumns;
     int m_gapBetweenEnemies;
@@ -89,6 +90,7 @@ public:
     void restartUfoClock();
     void restartUfoMoveClock();
     void moveEnemiesDown();
+    void restartAllClocks();
     void setDirectionToEnemies(Direction);
     bool isLost();
     bool isWin();

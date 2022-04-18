@@ -49,6 +49,7 @@ void Game::handleInput()
 void Game::render()
 {
     m_window.beginDraw();
+    m_window.draw(m_background_sprite);
     //---------------------------- DRAWING ----------------------------
     switch(m_state)
     {
@@ -128,6 +129,7 @@ void Game::update()
         case GameStates::Pause:
         {
             m_pause.update(m_score);
+            restartAllClocks();
             break;
         }
         case GameStates::Game:
@@ -191,6 +193,11 @@ void Game::tick()
 {
     //---------------------------- UPDATE BULLETS STATE ----------------------------
     updateBullets();
+    restartClock();
+    restartEnemyClock();
+    restartEnemyShootingIntervalClock();
+    restartUfoMoveClock();
+    restartUfoClock();
     //---------------------------- LOSE AND WIN CONDITIONS ----------------------------
     if(isLost())
     {
@@ -274,6 +281,7 @@ void Game::updateEnemies()
                 {
                     m_isEdge=true;
                 }
+                m_enemies.at(i).at(j).update();
                 m_enemies.at(i).at(j).move();
             }
         }
@@ -393,6 +401,13 @@ bool Game::isWin()
 }
 void Game::reset()
 {
+    if(!m_background_texture.loadFromFile("../assets/Background.png"))
+    {
+        std::cout<<"Background image not found!\n";
+        return;
+    }
+    m_background_sprite.setTexture(m_background_texture);
+    m_background_sprite.setScale(3.f,4.f);
     m_state=GameStates::Game;
     m_isWin=false;
     m_enemiesRows=3;
@@ -418,7 +433,6 @@ void Game::gameOver()
     m_bullets.clear();
     m_ufo.die();
     m_bestScore = std::max(m_bestScore, m_score);
-    std::cout<<m_bestScore<<std::endl;
     reset();
     m_state=GameStates::GameOver;
 }
@@ -431,6 +445,14 @@ void Game::restartEnemyClock() { m_enemyElapsed+=m_enemyClock.restart();}
 
 sf::Time Game::getEnemyShootingIntervalElapsed(){ return m_enemyShootingIntervalElapsed; }
 void Game::restartEnemyShootingIntervalClock() { m_enemyShootingIntervalElapsed+=m_enemyShootingIntervalClock.restart(); }
+void Game::restartAllClocks()
+{
+    m_elapsed=m_clock.restart();
+    m_enemyElapsed=m_enemyClock.restart();
+    m_enemyShootingIntervalElapsed=m_enemyShootingIntervalClock.restart();
+    m_ufoElapsed=m_ufoClock.restart();
+    m_ufoMoveElapsed=m_ufoMoveClock.restart();
+}
 
 sf::Time Game::getUfoElapsed(){ return m_ufoElapsed; }
 void Game::restartUfoClock() { m_ufoElapsed+=m_ufoClock.restart(); }

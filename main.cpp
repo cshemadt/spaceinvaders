@@ -10,10 +10,5 @@ int main()
         game.handleInput();
         game.update();
         game.render();
-        game.restartClock();
-        game.restartEnemyClock();
-        game.restartEnemyShootingIntervalClock();
-        game.restartUfoMoveClock();
-        game.restartUfoClock();
     }
 }
