@@ -13,10 +13,14 @@ protected:
     sf::Sprite m_enemySprite;
     sf::FloatRect m_enemyCollisionRect;
     sf::Texture m_enemyTexture;
+    sf::Texture explosionTexture;
+    sf::Sprite explosionSprite;
     int m_speed;
     bool m_isAlive;
     int m_currentTextureIndex;
+    int m_currentExplosionIndex;
 public:
+    bool explosionFlag;
     Enemy(sf::Vector2u windowSize);
     ~Enemy()=default;
     void setPosition(const sf::Vector2f &position);
@@ -30,7 +34,8 @@ public:
     void fire(std::vector<Bullet> &bullets);
     void reset();
     void updateCollisionRect();
-    void update();
+    void update(float deltaTime);
+    void updateExplosionAnimation();
     void render(sf::RenderWindow &renderWindow);
 
     sf::Vector2f getPosition();

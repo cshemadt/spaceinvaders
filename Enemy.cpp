@@ -33,6 +33,8 @@ void Enemy::reset()
     m_enemySprite.setPosition(m_windowSize.x/5-30,100);
     m_isAlive=true;
     m_speed=20;
+    explosionFlag=false;
+    m_currentExplosionIndex=0;
 }
 void Enemy::spriteInit(int index)
 {
@@ -42,6 +44,7 @@ void Enemy::spriteInit(int index)
         std::cout<<"Textures not found. \n";
         return;
     }
+    explosionTexture.loadFromFile("../assets/Explosion.png");
     m_enemySprite.setTexture(m_enemyTexture);
     m_enemySprite.setScale(3.f,3.f);
     m_enemySprite.setTextureRect(sf::IntRect(m_currentTextureIndex*16,0,16,16));
@@ -51,23 +54,39 @@ void Enemy::updateCollisionRect()
 {
     m_enemyCollisionRect = sf::FloatRect(m_enemySprite.getGlobalBounds().left, m_enemySprite.getGlobalBounds().top, m_enemySprite.getGlobalBounds().width-8,m_enemySprite.getGlobalBounds().height-8);
 }
-void Enemy::update()
+void Enemy::update(float deltaTime)
 {
-    if(m_currentTextureIndex == 0)
+    if(!explosionFlag)
     {
-        m_currentTextureIndex = 1;
+        if(m_currentTextureIndex == 0 && m_isAlive)
+        {
+            m_currentTextureIndex = 1;
+        }
+        else if(m_currentTextureIndex == 1 && m_isAlive)
+        {
+            m_currentTextureIndex = 0;
+        }
+        m_enemySprite.setTextureRect(sf::IntRect(m_currentTextureIndex*16,0,16,16));
     }
-    else if(m_currentTextureIndex == 1)
-    {
-        m_currentTextureIndex = 0;
-    }
-    m_enemySprite.setTextureRect(sf::IntRect(m_currentTextureIndex*16,0,16,16));
 }
-void Enemy::die() { m_isAlive = false; }
+void Enemy::updateExplosionAnimation()
+{
+    if(explosionFlag)
+    {
+        if(m_currentExplosionIndex == 14) { m_currentExplosionIndex = 0; explosionFlag = false; }
+        m_currentExplosionIndex++;
+        m_enemySprite.setTexture(explosionTexture);
+        m_enemySprite.setTextureRect(sf::IntRect(m_currentExplosionIndex*16,0,16,16));
+        }
+}
 
+void Enemy::die() 
+{
+    m_isAlive = false;
+}
 void Enemy::move() 
 {
-    if(m_isAlive)
+    if(m_isAlive || explosionFlag)
     {
         switch(m_direction)
         {
@@ -91,13 +110,13 @@ void Enemy::fire(std::vector<Bullet> &bullets)
     Bullet bullet;
     bullet.setBulletType(BulletTypes::Enemy);
     bullet.setSpeed(500);
-    bullet.setPosition(sf::Vector2f(getPosition().x, getPosition().y+getSprite()->getGlobalBounds().height/2));    bullets.push_back(bullet);
+    bullet.setPosition(sf::Vector2f(getPosition().x, getPosition().y+getSprite()->getGlobalBounds().height/2));    
+    bullets.push_back(bullet);
 }
 void Enemy::render(sf::RenderWindow &renderWindow) 
 {
     renderWindow.draw(m_enemySprite);
 }
-
 //---------------------------- GETTERS   ----------------------------
 sf::Vector2f Enemy::getPosition() { return m_enemySprite.getPosition(); }
 Direction Enemy::getDirection() { return m_direction; }

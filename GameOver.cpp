@@ -7,8 +7,8 @@
 
 GameOver::GameOver(Window &window) : mBestScore{}, mLastScore{},
                        mGameOverTextbox{sf::Vector2f(200,200),700,100,50,13,"GAME OVER"}, 
-                       mBestScoreTextbox{sf::Vector2f(220,280),500,100,30,13,""},
-                       mLastScoreTextbox{sf::Vector2f(220,330), 500,100,30,13,""},
+                       mBestScoreTextbox{sf::Vector2f(205,280),500,100,30,13,""},
+                       mLastScoreTextbox{sf::Vector2f(205,330), 500,100,30,13,""},
                        mResetButton{sf::Vector2f(120,400), sf::Vector2f(600,30), "PRESS ENTER TO PLAY AGAIN"},
                        mWindowSize{window.getWindowSize()}
 {

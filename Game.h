@@ -13,6 +13,7 @@
 #include "Pause.h"
 #include "GameOver.h"
 #include "Win.h"
+#include "Animation.h"
 enum class GameStates
 {
     Game,
@@ -35,6 +36,8 @@ private:
     GameStates m_state;
     sf::Sprite m_background_sprite;
     sf::Texture m_background_texture;
+    sf::Texture m_explosionTexture;
+    sf::Sprite m_explosionSprite;
     int m_enemiesRows;
     int m_enemiesColumns;
     int m_gapBetweenEnemies;
@@ -43,15 +46,20 @@ private:
     sf::Clock m_enemyShootingIntervalClock;
     sf::Clock m_ufoClock;
     sf::Clock m_ufoMoveClock;
+    sf::Clock explosionClock;
+    sf::Time m_explosionElapsed;
     sf::Time m_elapsed;
     sf::Time m_enemyElapsed;
     sf::Time m_enemyShootingIntervalElapsed;
     sf::Time m_ufoElapsed;
     sf::Time m_ufoMoveElapsed;
+    Animation explosionAnimation;
     float m_frameTime;
     float m_ufoSpeed;
+    float deltaTime;
     float m_shootingInterval;
     float m_ufoInterval;
+    float totalExplosionTime;
     int m_enemyBulletsLimit;
     int m_currentEnemyBullets;
     int m_score;
@@ -89,6 +97,7 @@ public:
     void restartEnemyShootingIntervalClock();
     void restartUfoClock();
     void restartUfoMoveClock();
+    void restartExplosionClock();
     void moveEnemiesDown();
     void restartAllClocks();
     void setDirectionToEnemies(Direction);
